@@ -27,6 +27,7 @@ The end result is an image that mimics real documents.
 
 .. toctree::
    :maxdepth: 2
-   :caption: Contents:
+   :Contents:
    
-   contents/installation
+   contents/installation/installation
+   contents/example_basic/example_basic
