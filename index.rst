@@ -1,3 +1,5 @@
+Augraphy
+========
 
 .. figure:: images/logo/augraphy.png
 
@@ -7,7 +9,7 @@ Highly-configurable pipelines apply adjustments to the originals to create reali
 
 Treatments applied by Augraphy fabricate realistic documents that appear to have been printed on dirty laser or inkjet printers, scanned by dirty office scanners, faxed by low-resolution fax machines and otherwise mistreated by real-world paper handling office equipment.
 
-:caption: How It Works:
+:How It Works:
 
 Augraphy's augmentation pipeline starts with an image of a clean document.  The pipeline begins by extracting the text and graphics from the source into an "ink" layer.  (Ink is synonymous with toner within Augraphy.)  The augmentation pipeline then distorts and degrades the ink layer.
 
@@ -19,7 +21,7 @@ The end result is an image that mimics real documents.
 
 .. figure:: images/pipeline/Pipeline.png
 
-:caption: Example Before / After Images:
+:Example Before / After Images:
 
 .. figure:: images/basic_examples/basic_examples.png
 
