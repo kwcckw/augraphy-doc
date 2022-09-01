@@ -9,20 +9,7 @@ Highly-configurable pipelines apply adjustments to the originals to create reali
 
 Treatments applied by Augraphy fabricate realistic documents that appear to have been printed on dirty laser or inkjet printers, scanned by dirty office scanners, faxed by low-resolution fax machines and otherwise mistreated by real-world paper handling office equipment.
 
-:How It Works:
-
-Augraphy's augmentation pipeline starts with an image of a clean document.  The pipeline begins by extracting the text and graphics from the source into an "ink" layer.  (Ink is synonymous with toner within Augraphy.)  The augmentation pipeline then distorts and degrades the ink layer.
-
-A paper factory provides either a white page or a randomly-selected paper texture base.  Like the ink layer, the paper can also be processed through a pipeline to further provide random realistic paper textures.
-
-After both the ink and paper phases are completed, processing continues by applying the ink, with its desired effects, to the paper.  This merged document image is then augmented further with distortions such as adding folds or other physical deformations or distortions that rely on simultaneous interactions of paper and ink layers.
-
-The end result is an image that mimics real documents.
-
-.. figure:: images/pipeline/Pipeline.png
-
 :Example Before / After Images:
-
 .. figure:: images/basic_examples/basic_examples.png
 
 .. toctree::
@@ -30,4 +17,6 @@ The end result is an image that mimics real documents.
    :caption: Contents:
    
    contents/installation
-   contents/example_basic
+   contents/augraphy_pipeline_how_augraphy_works
+   contents/usage_examples
+   contents/list_of_augmentations
