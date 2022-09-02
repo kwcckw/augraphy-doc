@@ -27,6 +27,7 @@ Examples 2 : Augmentation with custom augmentation pipeline
 To initialize a custom augmentation pipeline and augment an image::
 
     from augraphy import *
+    import random
 
     ink_phase = [
 
