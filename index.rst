@@ -17,6 +17,6 @@ Treatments applied by Augraphy fabricate realistic documents that appear to have
    :caption: Contents:
    
    contents/installation
-   contents/augraphy_pipeline_how_augraphy_works
-   contents/usage_examples
+   contents/how_augraphy_works
+   contents/example_usage
    contents/list_of_augmentations
