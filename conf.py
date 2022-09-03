@@ -19,7 +19,12 @@ def logical_abspath(p):
     return os.path.normpath(os.path.join(curr_path, p))
 
 
-sys.path.insert(0, logical_abspath('../../'))
+sys.path.insert(0, logical_abspath('../'))
+
+
+dir_path = os.path.abspath(os.path.dirname(__file__))
+if os.path.exists(os.path.join(dir_path, "augraphy")):
+    sys.path.insert(0, dir_path)
 
 
 # -- Project information -----------------------------------------------------
