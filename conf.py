@@ -10,9 +10,16 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+
+def logical_abspath(p):
+    # taken from https://stackoverflow.com/questions/17805312/how-to-get-the-symbolic-path-instead-of-real-path
+    curr_path = os.environ['PWD']
+    return os.path.normpath(os.path.join(curr_path, p))
+
+
+sys.path.insert(0, logical_abspath('../../'))
 
 
 # -- Project information -----------------------------------------------------
