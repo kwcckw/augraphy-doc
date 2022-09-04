@@ -14,7 +14,7 @@ import os
 import sys
 
 
-sys.path.insert(0, os.path.abspath('../augraphy/'))
+sys.path.insert(0, os.path.abspath('../../augraphy/'))
 
 
 # -- Project information -----------------------------------------------------
@@ -42,7 +42,7 @@ extensions = [
 source_suffix = '.rst'
 
 # The master toctree document.
-master_doc = 'index'
+# master_doc = 'index'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
