@@ -25,8 +25,10 @@ from augraphy.augmentations.pencilscribbles import PencilScribbles
 from augraphy.augmentations.subtlenoise import SubtleNoise
 from augraphy.augmentations.watermark import WaterMark
 from augraphy.augmentations.test_class import test_class123
+from augraphy.augmentations.test_class import Inkbleed2
 
 __all__ = [
+    "Inkbleed2",
     "test_class123",
     "BadPhotoCopy",
     "BindingsAndFasteners",

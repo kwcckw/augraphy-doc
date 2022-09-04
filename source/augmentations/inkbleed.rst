@@ -21,6 +21,16 @@ The ``testing`` class
     :show-inheritance:
 
 
+
+The ``testing`` class
+*****************************
+.. autoclass:: augraphy.augmentations.inkbleed.Inkbleed2
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+
+
 The ``Inkbleed`` class
 *****************************
 .. autoclass:: augraphy.augmentations.inkbleed.Inkbleed
