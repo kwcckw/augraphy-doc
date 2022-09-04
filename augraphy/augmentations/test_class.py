@@ -19,11 +19,15 @@ class test_class123(object):
 
 
 class Inkbleed2(object):
-    """Uses Sobel edge detection to create a mask of all edges, then applies random noise to those edges. When followed by a blur, this creates a fuzzy edge that emulates an ink bleed effect.
+    """Uses Sobel edge detection to create a mask of all edges, then applies
+    random noise to those edges. When followed by a blur, this creates a
+    fuzzy edge that emulates an ink bleed effect.
 
-    :param intensity_range: Pair of floats determining the range from which noise intensity is sampled.
+    :param intensity_range: Pair of floats determining the range from which
+           noise intensity is sampled.
     :type intensity: tuple, optional
-    :param color_range: Pair of ints determining the range from which color noise is sampled.
+    :param color_range: Pair of ints determining the range from which color
+           noise is sampled.
     :type color_range: tuple, optional
     :param kernel_size: Kernel size to determine area of inkbleed effect.
     :type kernel_size: tuple, optional
@@ -41,10 +45,8 @@ class Inkbleed2(object):
         severity=(0.4, 0.6),
         p=1,
     ):
-        """Constructor method
-        """
+        """Constructor method"""
         self.intensity_range = intensity_range
-        self.color_range=color_range
+        self.color_range = color_range
         self.kernel_size = kernel_size
         self.severity = severity
-        
