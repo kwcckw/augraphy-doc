@@ -34,16 +34,16 @@ release = '8.0.2'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-#    'sphinx.ext.viewcode',
-#    'sphinx.ext.githubpages',
-#    'sphinx.ext.autosummary',
+    'sphinx.ext.viewcode',
+    'sphinx.ext.githubpages',
+    'sphinx.ext.autosummary',
 ]
 
 # source_suffix = ['.rst', '.md']
 source_suffix = '.rst'
 
 # The master toctree document.
-# master_doc = 'index'
+master_doc = 'index'
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
