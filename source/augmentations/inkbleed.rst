@@ -7,14 +7,6 @@ The Ink Bleed augmentation relies on Sobel edge detection to create a mask of al
 
 The ``testing`` class
 *****************************
-.. autoclass:: test_class.test_class123
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
-The ``testing`` class
-*****************************
 .. autoclass:: augraphy.augmentations.test_class.test_class123
     :members:
     :undoc-members:
@@ -24,7 +16,7 @@ The ``testing`` class
 
 The ``testing`` class
 *****************************
-.. autoclass:: augraphy.augmentations.inkbleed.Inkbleed2
+.. autoclass:: augraphy.augmentations.test_class.Inkbleed2
     :members:
     :undoc-members:
     :show-inheritance:
