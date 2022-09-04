@@ -34,7 +34,7 @@ The ``testing`` class
 
 The ``Inkbleed`` class
 *****************************
-.. autoclass:: augraphy.augmentations.inkbleed.Inkbleed
+.. autoclass:: augraphy.augmentations.inkbleed.InkBleed
     :members:
     :undoc-members:
     :show-inheritance:
@@ -42,7 +42,7 @@ The ``Inkbleed`` class
 
 The ``Inkbleed2`` class
 *****************************
-.. autoclass:: augmentations.inkbleed.Inkbleed
+.. autoclass:: augmentations.inkbleed.InkBleed
     :members:
     :undoc-members:
     :show-inheritance:
@@ -50,14 +50,14 @@ The ``Inkbleed2`` class
 
 The ``Inkbleed3`` class
 *****************************
-.. autoclass:: inkbleed.Inkbleed
+.. autoclass:: inkbleed.InkBleed
     :members:
     :undoc-members:
     :show-inheritance:
 
 The ``Inkbleed4`` class
 *****************************
-.. autoclass:: Inkbleed
+.. autoclass:: InkBleed
     :members:
     :undoc-members:
     :show-inheritance:
