@@ -15,7 +15,7 @@ class InkBleed(Augmentation):
 
     :param intensity_range: Pair of floats determining the range from which
            noise intensity is sampled.
-    :type intensity: tuple, optional
+    :type intensity_range: tuple, optional
     :param color_range: Pair of ints determining the range from which color
            noise is sampled.
     :type color_range: tuple, optional
