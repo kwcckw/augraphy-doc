@@ -3,14 +3,6 @@ List of Augmentations
 =====================
 
 
-The ``testing`` class
-*****************************
-.. autoclass:: test_class.test_class123
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-
 The ``Inkbleed`` class
 *****************************
 .. autoclass:: augraphy.augmentations.inkbleed.Inkbleed
