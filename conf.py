@@ -24,7 +24,7 @@ copyright = '2022, Sparkfish'
 author = 'Sparkfish'
 
 # The full version, including alpha/beta/rc tags
-release = '0.0.1'
+release = '8.0.2'
 
 
 # -- General configuration ---------------------------------------------------
@@ -34,9 +34,9 @@ release = '0.0.1'
 # ones.
 extensions = [
     'sphinx.ext.autodoc',
-    'sphinx.ext.viewcode',
-    'sphinx.ext.githubpages',
-    'sphinx.ext.autosummary',
+#    'sphinx.ext.viewcode',
+#    'sphinx.ext.githubpages',
+#    'sphinx.ext.autosummary',
 ]
 
 # source_suffix = ['.rst', '.md']
