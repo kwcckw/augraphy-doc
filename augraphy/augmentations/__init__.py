@@ -24,9 +24,10 @@ from augraphy.augmentations.pageborder import PageBorder
 from augraphy.augmentations.pencilscribbles import PencilScribbles
 from augraphy.augmentations.subtlenoise import SubtleNoise
 from augraphy.augmentations.watermark import WaterMark
-
+from augraphy.augmentations.test_class import test_class123
 
 __all__ = [
+    "test_class123",
     "BadPhotoCopy",
     "BindingsAndFasteners",
     "BleedThrough",
