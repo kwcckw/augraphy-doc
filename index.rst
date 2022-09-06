@@ -19,7 +19,7 @@ Treatments applied by Augraphy fabricate realistic documents that appear to have
    source/installation
    source/how_augraphy_works
    source/example_usage
-   ../source/list_of_augmentations
+   ssource/list_of_augmentations
 
 
 Indices and tables
