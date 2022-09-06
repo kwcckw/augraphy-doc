@@ -31,7 +31,7 @@ class ColorPaper(Augmentation):
         return f"ColorPaper(hue_range={self.hue_range}, saturation_range={self.saturation_range}, p={self.p})"
 
     def add_color(self, image):
-         """Add color background into input image.
+        """Add color background into input image.
 
         :param image: The image to apply the function.
         :type image: numpy.array (numpy.uint8)

@@ -144,9 +144,9 @@ class BleedThrough(Augmentation):
         img_bleed = cv2.GaussianBlur(img_noise, ksize=ksize, sigmaX=sigmaX)
         return img_bleed
 
-    # create foreground image for bleedthrough effect
+
     def create_bleedthrough_foreground(self, image):
-         """Create foreground image for bleedthrough effect.
+        """Create foreground image for bleedthrough effect.
 
             :param image: The background image of the bleedthrough effect.
             :type image: numpy.array (numpy.uint8)
