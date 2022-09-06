@@ -16,10 +16,10 @@ Treatments applied by Augraphy fabricate realistic documents that appear to have
    :maxdepth: 2
    :caption: Contents:
    
-   source/installation
-   source/how_augraphy_works
-   source/example_usage
-   source/list_of_augmentations
+   doc/source/installation
+   doc/source/how_augraphy_works
+   doc/source/example_usage
+   doc/source/list_of_augmentations
 
 
 Indices and tables

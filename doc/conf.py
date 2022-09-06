@@ -14,14 +14,14 @@ import os
 import sys
 
 
-sys.path.insert(0, os.path.abspath('augraphy/'))
+sys.path.insert(0, os.path.abspath('../'))
 
 
 # -- Project information -----------------------------------------------------
 
 project = 'augraphy'
-copyright = '2022, Sparkfish'
-author = 'Sparkfish'
+copyright = '2022, Sparkfish LLC'
+author = 'Sparkfish LLC'
 
 # The full version, including alpha/beta/rc tags
 release = '8.0.2'
