@@ -13,7 +13,7 @@ Treatments applied by Augraphy fabricate realistic documents that appear to have
 .. figure:: images/basic_examples/basic_examples.png
 
 .. toctree::
-   :maxdepth: 4
+   :maxdepth: 2
    :caption: Contents:
    
    doc/source/installation
