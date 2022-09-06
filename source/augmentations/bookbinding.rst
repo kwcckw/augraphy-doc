@@ -1,6 +1,6 @@
-************
+***********
 BookBinding
-************
+***********
 
 .. autoclass:: augraphy.augmentations.bookbinding.BookBinding
     :members:
