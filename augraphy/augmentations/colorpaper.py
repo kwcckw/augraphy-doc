@@ -36,7 +36,7 @@ class ColorPaper(Augmentation):
         :param image: The image to apply the function.
         :type image: numpy.array (numpy.uint8)
         """
-        
+
         if len(image.shape) < 3:
             image = cv2.cvtColor(image, cv2.COLOR_GRAY2BGR)
         ysize, xsize = image.shape[:2]
