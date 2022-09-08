@@ -3,7 +3,7 @@ List of Augmentations
 =====================
 
 .. toctree::
-   :maxdepth: 6
+   :maxdepth: 1
 
    augmentations/badphotocopy.rst
    augmentations/bindingsandfasteners.rst

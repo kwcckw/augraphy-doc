@@ -22,25 +22,14 @@ Initially, a clean image with single line of text is created.
 
 ::
 
-# import libraries
+
 import cv2
 import numpy as np
 from augraphy import *
-
-
-# create a clean image with single line of text
 image = np.full((500, 1500,3), 255, dtype="uint8")
-cv2.putText(
-    image,
-    "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
-    (80, 250),
-    cv2.FONT_HERSHEY_SIMPLEX,
-    1.5,
-    0,
-    3,
-)
+cv2.putText(image,"Lorem ipsum dolor sit amet, consectetur adipiscing elit",(80, 250),cv2.FONT_HERSHEY_SIMPLEX,1.5,0,3)
 
-.. figure:: .augmentations/input.png
+.. figure:: augmentations/input.png
 
 ---------
 Example 1
@@ -62,7 +51,7 @@ BadPhotoCopy_type_1 = BadPhotoCopy(noise_type=1,
 img_BadPhotoCopy_type_1 = BadPhotoCopy_type_1(image)
 cv2.imshow("type1",img_BadPhotoCopy_type_1)
 
-.. figure:: .augmentations/badphotocopy/type1.png
+.. figure:: augmentations/badphotocopy/type1.png
 
 ---------
 Example 2
@@ -84,7 +73,7 @@ BadPhotoCopy_type_2 = BadPhotoCopy(noise_type=2,
 img_BadPhotoCopy_type_2 = BadPhotoCopy_type_2(image)
 cv2.imshow("type2",img_BadPhotoCopy_type_2)
 
-.. figure:: .augmentations/badphotocopy/type2.png
+.. figure:: augmentations/badphotocopy/type2.png
 
 ---------
 Example 3
@@ -105,7 +94,7 @@ BadPhotoCopy_type_3 = BadPhotoCopy(noise_type=3,
 img_BadPhotoCopy_type_3 = BadPhotoCopy_type_3(image)
 cv2.imshow("type3",img_BadPhotoCopy_type_3)
 
-.. figure:: .augmentations/badphotocopy/type3.png
+.. figure:: augmentations/badphotocopy/type3.png
 
 ---------
 Example 4
@@ -124,7 +113,7 @@ BadPhotoCopy_type_4 = BadPhotoCopy(noise_type=4,
 img_BadPhotoCopy_type_4 = BadPhotoCopy_type_4(image)
 cv2.imshow("type4",img_BadPhotoCopy_type_4)
 
-.. figure:: .augmentations/badphotocopy/type4.png
+.. figure:: augmentations/badphotocopy/type4.png
 
 
 
