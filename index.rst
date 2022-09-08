@@ -22,9 +22,3 @@ Treatments applied by Augraphy fabricate realistic documents that appear to have
    doc/source/list_of_augmentations
 
 
-Indices and tables
-==================
-
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
