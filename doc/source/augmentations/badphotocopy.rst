@@ -9,7 +9,7 @@ BadPhotoCopy
 
 
 --------
-Examples
+Overview
 --------
 There are 4 main types of noise in BadPhotoCopy augmentation:
 
@@ -22,12 +22,25 @@ Initially, a clean image with single line of text is created.
 
 ::
 
-
-import cv2
-import numpy as np
-from augraphy import *
-image = np.full((500, 1500,3), 255, dtype="uint8")
-cv2.putText(image,"Lorem ipsum dolor sit amet, consectetur adipiscing elit",(80, 250),cv2.FONT_HERSHEY_SIMPLEX,1.5,0,3)
+    # import libraries
+    import cv2
+    import numpy as np
+    from augraphy import *
+    
+    
+    # create a clean image with single line of text
+    image = np.full((500, 1500,3), 255, dtype="uint8")
+    cv2.putText(
+        image,
+        "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
+        (80, 250),
+        cv2.FONT_HERSHEY_SIMPLEX,
+        1.5,
+        0,
+        3,
+    )
+    
+    cv2.imwrite("input.png", image)
 
 .. figure:: augmentations/input.png
 
@@ -38,18 +51,18 @@ In this example, a BadPhotoCopy augmentation instance is initialized with noise 
 
 ::
 
-BadPhotoCopy_type_1 = BadPhotoCopy(noise_type=1,
-                                   noise_side="left",
-                                   noise_iteration=(2,3),
-                                   noise_size=(2,3),
-                                   noise_sparsity=(0.15,0.15),
-                                   noise_concentration=(0.3,0.3),
-                                   blur_noise=-1,
-                                   blur_noise_kernel=(5, 5),
-                                   wave_pattern=0,
-                                   edge_effect=0)
-img_BadPhotoCopy_type_1 = BadPhotoCopy_type_1(image)
-cv2.imshow("type1",img_BadPhotoCopy_type_1)
+    BadPhotoCopy_type_1 = BadPhotoCopy(noise_type=1,
+                                       noise_side="left",
+                                       noise_iteration=(2,3),
+                                       noise_size=(2,3),
+                                       noise_sparsity=(0.15,0.15),
+                                       noise_concentration=(0.3,0.3),
+                                       blur_noise=-1,
+                                       blur_noise_kernel=(5, 5),
+                                       wave_pattern=0,
+                                       edge_effect=0)
+    img_BadPhotoCopy_type_1 = BadPhotoCopy_type_1(image)
+    cv2.imshow("type1",img_BadPhotoCopy_type_1)
 
 .. figure:: augmentations/badphotocopy/type1.png
 
@@ -60,18 +73,18 @@ In this example, a BadPhotoCopy augmentation instance is initialized with noise 
 
 ::
 
-BadPhotoCopy_type_2 = BadPhotoCopy(noise_type=2,
-                                   noise_side="right",
-                                   noise_iteration=(2,3),
-                                   noise_size=(2,3),
-                                   noise_sparsity=(0.4,0.5),
-                                   noise_concentration=(0.1,0.2),
-                                   blur_noise=1,
-                                   blur_noise_kernel=(5, 5),
-                                   wave_pattern=0,
-                                   edge_effect=1)
-img_BadPhotoCopy_type_2 = BadPhotoCopy_type_2(image)
-cv2.imshow("type2",img_BadPhotoCopy_type_2)
+    BadPhotoCopy_type_2 = BadPhotoCopy(noise_type=2,
+                                       noise_side="right",
+                                       noise_iteration=(2,3),
+                                       noise_size=(2,3),
+                                       noise_sparsity=(0.4,0.5),
+                                       noise_concentration=(0.1,0.2),
+                                       blur_noise=1,
+                                       blur_noise_kernel=(5, 5),
+                                       wave_pattern=0,
+                                       edge_effect=1)
+    img_BadPhotoCopy_type_2 = BadPhotoCopy_type_2(image)
+    cv2.imshow("type2",img_BadPhotoCopy_type_2)
 
 .. figure:: augmentations/badphotocopy/type2.png
 
@@ -82,17 +95,17 @@ In this example, a BadPhotoCopy augmentation instance is initialized with noise 
 
 ::
 
-BadPhotoCopy_type_3 = BadPhotoCopy(noise_type=3,
-                                   noise_iteration=(2,3),
-                                   noise_size=(1,3),
-                                   noise_sparsity=(0.2,0.3),
-                                   noise_concentration=(0.5,0.5),
-                                   blur_noise=1,
-                                   blur_noise_kernel=(5, 5),
-                                   wave_pattern=0,
-                                   edge_effect=1)
-img_BadPhotoCopy_type_3 = BadPhotoCopy_type_3(image)
-cv2.imshow("type3",img_BadPhotoCopy_type_3)
+    BadPhotoCopy_type_3 = BadPhotoCopy(noise_type=3,
+                                       noise_iteration=(2,3),
+                                       noise_size=(1,3),
+                                       noise_sparsity=(0.2,0.3),
+                                       noise_concentration=(0.5,0.5),
+                                       blur_noise=1,
+                                       blur_noise_kernel=(5, 5),
+                                       wave_pattern=0,
+                                       edge_effect=1)
+    img_BadPhotoCopy_type_3 = BadPhotoCopy_type_3(image)
+    cv2.imshow("type3",img_BadPhotoCopy_type_3)
 
 .. figure:: augmentations/badphotocopy/type3.png
 
@@ -102,16 +115,17 @@ Example 4
 In this example, a BadPhotoCopy augmentation instance is initialized with noise type of 3. Noise concentation is set to medium intensity (0.5, 0.5) and noise sparsity is set to a low value(0.2, 0.3). Augmentation is set to run with 2 to 3 iterations and each time the noise size is randomly set from 1 to 3. Flag to blur noise is enabled and flag for edge effet is set to random (-1).
 
 ::
-BadPhotoCopy_type_4 = BadPhotoCopy(noise_type=4,
-                                   noise_iteration=(2,3),
-                                   noise_size=(1,3),
-                                   noise_sparsity=(0.5,0.5),
-                                   noise_concentration=(0.99,0.99),
-                                   blur_noise=0,
-                                   wave_pattern=0,
-                                   edge_effect=0)
-img_BadPhotoCopy_type_4 = BadPhotoCopy_type_4(image)
-cv2.imshow("type4",img_BadPhotoCopy_type_4)
+
+    BadPhotoCopy_type_4 = BadPhotoCopy(noise_type=4,
+                                       noise_iteration=(2,3),
+                                       noise_size=(1,3),
+                                       noise_sparsity=(0.5,0.5),
+                                       noise_concentration=(0.99,0.99),
+                                       blur_noise=0,
+                                       wave_pattern=0,
+                                       edge_effect=0)
+    img_BadPhotoCopy_type_4 = BadPhotoCopy_type_4(image)
+    cv2.imshow("type4",img_BadPhotoCopy_type_4)
 
 .. figure:: augmentations/badphotocopy/type4.png
 
