@@ -42,6 +42,7 @@ Initially, a clean image with single line of text is created.
     
     cv2.imwrite("input.png", image)
 
+Clean image:
 .. figure:: augmentations/input.png
 
 ---------
@@ -64,6 +65,7 @@ In this example, a BadPhotoCopy augmentation instance is initialized with noise 
     img_BadPhotoCopy_type_1 = BadPhotoCopy_type_1(image)
     cv2.imshow("type1",img_BadPhotoCopy_type_1)
 
+Augmented image:
 .. figure:: augmentations/badphotocopy/type1.png
 
 ---------
@@ -86,6 +88,7 @@ In this example, a BadPhotoCopy augmentation instance is initialized with noise 
     img_BadPhotoCopy_type_2 = BadPhotoCopy_type_2(image)
     cv2.imshow("type2",img_BadPhotoCopy_type_2)
 
+Augmented image:
 .. figure:: augmentations/badphotocopy/type2.png
 
 ---------
@@ -107,6 +110,7 @@ In this example, a BadPhotoCopy augmentation instance is initialized with noise 
     img_BadPhotoCopy_type_3 = BadPhotoCopy_type_3(image)
     cv2.imshow("type3",img_BadPhotoCopy_type_3)
 
+Augmented image:
 .. figure:: augmentations/badphotocopy/type3.png
 
 ---------
@@ -127,6 +131,7 @@ In this example, a BadPhotoCopy augmentation instance is initialized with noise 
     img_BadPhotoCopy_type_4 = BadPhotoCopy_type_4(image)
     cv2.imshow("type4",img_BadPhotoCopy_type_4)
 
+Augmented image:
 .. figure:: augmentations/badphotocopy/type4.png
 
 
