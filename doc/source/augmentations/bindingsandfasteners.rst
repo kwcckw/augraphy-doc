@@ -38,6 +38,7 @@ Initially, a clean image with single line of text is created.
     cv2.imwrite("input.png", image)
 
 Clean image:
+
 .. figure:: augmentations/input.png
 
 ---------
@@ -63,6 +64,7 @@ The effect is set at the left edge and with random offset range of 30 to 50 pixe
     cv2.imshow("punch_holes", img_punch_holes)
 
 Augmented image:
+
 .. figure:: augmentations/bindingsandfasteners/punch_holes.png
 
 ---------
@@ -89,6 +91,7 @@ The effect is set at the left edge and with random offset range of 30 to 50 pixe
     cv2.imshow("binding_holes", img_binding_holes)
 
 Augmented image:
+
 .. figure:: augmentations/bindingsandfasteners/binding_holes.png
 
 ---------
@@ -115,6 +118,7 @@ The effect is set at the left edge and with random offset range of 30 to 50 pixe
     cv2.imshow("binding_holes", img_binding_holes)
 
 Augmented image:
+
 .. figure:: augmentations/bindingsandfasteners/binding_holes.png
 
 
@@ -141,6 +145,7 @@ The effect is set to random edge and with random offset range of 10 to 20 pixels
     cv2.imshow("clips",img_binding_clips)
 
 Augmented image:
+
 .. figure:: augmentations/bindingsandfasteners/clips.png
 
 ---------
@@ -169,7 +174,9 @@ The effect is set to right edge and with random offset range of 10 to 20 pixels 
     cv2.imshow("user binders",img_user_binder)
 
 Manually created binder:
+
 .. figure:: augmentations/bindingsandfasteners/user_binder.png
 
 Augmented image:
+
 .. figure:: augmentations/bindingsandfasteners/user_binders.png
