@@ -15,6 +15,8 @@ The Bindings And Fasteners augmentation creates binder mark in the input image. 
 
 Initially, a clean image with single line of text is created.
 
+Code example:
+
 ::
 
     # import libraries
@@ -48,6 +50,8 @@ In this example, a BindingsAndFasteners augmentation instance is initialized and
 The punch holes mark is set to bind 3 times (3,3) and with scale of 1.5 (1.5,1.5).
 The effect is set at the left edge and with random offset range of 30 to 50 pixels from the chosen edge.
 
+Code example:
+
 ::
 
     binder_punch_holes = BindingsAndFasteners(overlay_types="darken",
@@ -74,6 +78,7 @@ In this example, a BindingsAndFasteners augmentation instance is initialized and
 The binding holes mark is set to bind 9 to 10 times (9,10) and with scale of 1 to 2 (1,2).
 The effect is set at the left edge and with random offset range of 30 to 50 pixels from the chosen edge.
 
+Code example:
 
 ::
 
@@ -93,34 +98,6 @@ The effect is set at the left edge and with random offset range of 30 to 50 pixe
 Augmented image:
 
 .. figure:: augmentations/bindingsandfasteners/binding_holes.png
-
----------
-Example 2
----------
-In this example, a BindingsAndFasteners augmentation instance is initialized and it is using a synthetic binding holes mark. 
-The binding holes mark is set to bind 9 to 10 times (9,10) and with scale of 1 to 2 (1,2).
-The effect is set at the left edge and with random offset range of 30 to 50 pixels from the chosen edge.
-
-
-::
-
-    binder_binding_holes = BindingsAndFasteners(overlay_types="darken",
-                                        foreground=None,
-                                        effect_type="binding_holes",
-                                        ntimes=(9, 10),
-                                        nscales=(1, 2),
-                                        edge="top",
-                                        edge_offset=(40,50),
-                                        use_figshare_library=0,
-                                    )
-        
-    img_binding_holes =binder_binding_holes(image)
-    cv2.imshow("binding_holes", img_binding_holes)
-
-Augmented image:
-
-.. figure:: augmentations/bindingsandfasteners/binding_holes.png
-
 
 ---------
 Example 3
@@ -129,6 +106,7 @@ In this example, a BindingsAndFasteners augmentation instance is initialized and
 The binding clips mark is set to bind 2 to 3 times (2,3) and with scale of 1 to 2 (1,2).
 The effect is set to random edge and with random offset range of 10 to 20 pixels from the edge.
 
+Code example:
 
 ::
 
@@ -155,6 +133,7 @@ In this example, a BindingsAndFasteners augmentation instance is initialized and
 The binder is set to bind 2 to 3 times (2,3) and with scale of 1 to 2 (1,2).
 The effect is set to right edge and with random offset range of 10 to 20 pixels from the edge.
 
+Code example:
 
 ::
 

@@ -20,6 +20,8 @@ Noise type 4 creates sparse and little noises.
 
 Initially, a clean image with single line of text is created.
 
+Code example:
+
 ::
 
     # import libraries
@@ -51,6 +53,8 @@ Example 1
 ---------
 In this example, a BadPhotoCopy augmentation instance is initialized with noise type of 1 and the noise is set at the left edge of the image. Noise concentation is set to low intensity (0.2, 0.3) and noise sparsity is set to a low value (0.15, 0.15). Augmentation is set to run with 2 to 3 iterations and each time the noise size is randomly set from 2 to 3. Flag to blur noise is set to random (-1). 
 
+Code example:
+
 ::
 
     BadPhotoCopy_type_1 = BadPhotoCopy(noise_type=1,
@@ -74,6 +78,8 @@ Augmented image:
 Example 2
 ---------
 In this example, a BadPhotoCopy augmentation instance is initialized with noise type of 2 and the noise is set at the right edge of the image. Noise concentation is set to low intensity (0.5, 0.5) and noise sparsity is set to a medium value (0.2, 0.3). Augmentation is set to run with 2 to 3 iterations and each time the noise size is randomly set from 2 to 3. Flags to blur noise and edge effect in noise are enabled. 
+
+Code example:
 
 ::
 
@@ -99,6 +105,8 @@ Example 3
 ---------
 In this example, a BadPhotoCopy augmentation instance is initialized with noise type of 3. Noise concentation is set to medium intensity (0.5, 0.5) and noise sparsity is set to a low value(0.2, 0.3). Augmentation is set to run with 2 to 3 iterations and each time the noise size is randomly set from 1 to 3. Flag to blur noise is enabled and flag for edge effet is set to random (-1).
 
+Code example:
+
 ::
 
     BadPhotoCopy_type_3 = BadPhotoCopy(noise_type=3,
@@ -121,6 +129,8 @@ Augmented image:
 Example 4
 ---------
 In this example, a BadPhotoCopy augmentation instance is initialized with noise type of 3. Noise concentation is set to medium intensity (0.5, 0.5) and noise sparsity is set to a low value(0.2, 0.3). Augmentation is set to run with 2 to 3 iterations and each time the noise size is randomly set from 1 to 3. Flag to blur noise is enabled and flag for edge effet is set to random (-1).
+
+Code example:
 
 ::
 
