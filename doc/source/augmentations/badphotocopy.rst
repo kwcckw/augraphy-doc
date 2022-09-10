@@ -29,7 +29,7 @@ Initially, a clean image with single line of text is created.
     
     
     # create a clean image with single line of text
-    image = np.full((500, 1500,3), 255, dtype="uint8")
+    image = np.full((500, 1500,3), 250, dtype="uint8")
     cv2.putText(
         image,
         "Lorem ipsum dolor sit amet, consectetur adipiscing elit",
