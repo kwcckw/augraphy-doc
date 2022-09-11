@@ -95,7 +95,7 @@ Code example:
 
 Augmented image:
 
-.. figure:: augmentations/markup/markup_hightlight.png
+.. figure:: augmentations/markup/markup_highlight.png
 
 ---------
 Example 3
