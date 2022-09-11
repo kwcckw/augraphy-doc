@@ -7,7 +7,6 @@ BleedThrough
     :undoc-members:
     :show-inheritance:
 
-
 --------
 Overview
 --------
@@ -37,7 +36,7 @@ Code example:
         3,
     )
     
-    cv2.imwrite("input.png", image)
+    cv2.imshow("Input image", image)
 
 Clean image:
 
@@ -71,4 +70,3 @@ Augmented image:
 
 .. figure:: augmentations/bleedthrough/bleedthrough.png
 
----------
