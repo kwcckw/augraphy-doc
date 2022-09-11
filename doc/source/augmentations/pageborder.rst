@@ -7,7 +7,6 @@ PageBorder
     :undoc-members:
     :show-inheritance:
 
-
 --------
 Overview
 --------
