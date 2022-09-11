@@ -66,7 +66,7 @@ Code example:
 
 Augmented image:
 
-.. figure:: augmentations/bookbinding/img_book_binding_up.png
+.. figure:: augmentations/bookbinding/book_binding_up.png
 
 ---------
 Example 2
@@ -90,4 +90,4 @@ Code example:
 
 Augmented image:
 
-.. figure:: augmentations/bookbinding/img_book_binding_down.png
+.. figure:: augmentations/bookbinding/book_binding_down.png
