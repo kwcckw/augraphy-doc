@@ -7,7 +7,7 @@ Dithering
     :undoc-members:
     :show-inheritance:
 
-
+--------
 Overview
 --------
 The Dithering augmentation applies Ordered or Floyd Steinberg dithering to the input image.
