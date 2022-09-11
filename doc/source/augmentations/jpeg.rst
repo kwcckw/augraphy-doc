@@ -62,7 +62,7 @@ Augmented image:
 .. figure:: augmentations/jpeg/jpeg_5.png
 
 ---------
-Example 1
+Example 2
 ---------
 In this example, a Jpeg augmentation instance is initialized and the quality is set to range of 50 to 55% (90,95) of original image quality.
 
