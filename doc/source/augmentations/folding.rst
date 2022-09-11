@@ -64,4 +64,4 @@ Code example:
 
 Augmented image:
 
-.. figure:: augmentations/faxify/folding.png
+.. figure:: augmentations/folding/folding.png
