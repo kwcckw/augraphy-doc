@@ -54,8 +54,7 @@ Code example:
 ::
 
     inkbleed = InkBleed(intensity_range=(0.1, 0.2),
-       
-                     color_range=(0, 224),
+                        color_range=(0, 224),
                         kernel_size=(7, 7),
                         severity=(0.3, 0.4)
                         )
