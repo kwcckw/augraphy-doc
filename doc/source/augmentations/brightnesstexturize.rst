@@ -7,7 +7,6 @@ BrightnessTexturize
     :undoc-members:
     :show-inheritance:
 
-
 --------
 Overview
 --------
