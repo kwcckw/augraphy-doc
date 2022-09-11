@@ -7,7 +7,6 @@ LowInkPeriodicLines
     :undoc-members:
     :show-inheritance:
 
-
 --------
 Overview
 --------
