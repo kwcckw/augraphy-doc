@@ -7,7 +7,6 @@ LightingGradient
     :undoc-members:
     :show-inheritance:
 
-
 --------
 Overview
 --------
