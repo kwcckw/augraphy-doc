@@ -84,7 +84,7 @@ To initialize a custom augmentation pipeline and augment an image::
                     turbulence_range=(2, 5),
                 ),
                 BrightnessTexturize(
-                    range=(0.9, 0.99),
+                    brightness_range=(0.9, 0.99),
                     deviation=0.03,
                 ),
             ],
@@ -109,7 +109,7 @@ To initialize a custom augmentation pipeline and augment an image::
             p=0.33,
         ),
         SubtleNoise(
-            range=random.randint(5, 10),
+            subtle_range=random.randint(5, 10),
             p=0.33,
         ),
         Jpeg(
@@ -176,10 +176,10 @@ To initialize a custom augmentation pipeline and augment an image::
             mirror_range=(0.3, 0.5),
             p=0.33,
         ),
-    ]   
+    ]
 
     pipeline = AugraphyPipeline(ink_phase, paper_phase, post_phase)
-	
+
     img = cv2.imread("image.png")
 
     data = pipeline.augment(img)

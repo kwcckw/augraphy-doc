@@ -10,15 +10,13 @@ Highly-configurable pipelines apply adjustments to the originals to create reali
 Treatments applied by Augraphy fabricate realistic documents that appear to have been printed on dirty laser or inkjet printers, scanned by dirty office scanners, faxed by low-resolution fax machines and otherwise mistreated by real-world paper handling office equipment.
 
 :Example Before / After Images:
-.. figure:: images/basic_examples/basic_examples.png
+.. figure:: images/basic_examples.png
 
 .. toctree::
    :maxdepth: 1
    :caption: Contents:
-   
+
    doc/source/installation
    doc/source/how_augraphy_works
    doc/source/example_usage
    doc/source/list_of_augmentations
-
-

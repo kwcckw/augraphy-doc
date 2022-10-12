@@ -1,5 +1,5 @@
 ==================
-How Augraphy Works 
+How Augraphy Works
 ==================
 
 Augraphy uses a pipeline in augmentation process. Augraphy's augmentation pipeline starts with an image of a clean document.  The pipeline begins by extracting the text and graphics from the source into an "ink" layer.  (Ink is synonymous with toner within Augraphy.)  The augmentation pipeline then distorts and degrades the ink layer.
@@ -10,7 +10,7 @@ After both the ink and paper phases are completed, processing continues by apply
 
 The end result is an image that mimics real documents.
 
-.. figure:: ../../images/pipeline/Pipeline.png
+.. figure:: ../../images/Pipeline.png
 
 
 --------------------------
@@ -20,7 +20,7 @@ Example of simple pipeline
 An example of simple augmentation pipeline with just single augmentation in each ink, paper and post phase.
 
 ::
-    
+
     from augraphy import *
 
     ink_phase   = [Dithering(p=0.33)]
@@ -115,7 +115,7 @@ The current default augmentation pipeline is a complex pipeline with multiple au
                             turbulence_range=(2, 5),
                         ),
                         BrightnessTexturize(
-                            range=(0.9, 0.99),
+                            brightness_range=(0.9, 0.99),
                             deviation=0.03,
                         ),
                     ],
@@ -123,7 +123,7 @@ The current default augmentation pipeline is a complex pipeline with multiple au
                 AugmentationSequence(
                     [
                         BrightnessTexturize(
-                            range=(0.9, 0.99),
+                            brightness_range=(0.9, 0.99),
                             deviation=0.03,
                         ),
                         NoiseTexturize(
@@ -136,7 +136,7 @@ The current default augmentation pipeline is a complex pipeline with multiple au
             p=0.33,
         ),
         Brightness(
-            range=(0.9, 1.1),
+            brightness_range=(0.9, 1.1),
             min_brightness=0,
             min_brightness_value=(120, 150),
             p=0.1,
@@ -178,7 +178,7 @@ The current default augmentation pipeline is a complex pipeline with multiple au
                     transparency=None,
                 ),
                 Brightness(
-                    range=(0.9, 1.1),
+                    brightness_range=(0.9, 1.1),
                     min_brightness=0,
                     min_brightness_value=(120, 150),
                 ),
@@ -196,7 +196,7 @@ The current default augmentation pipeline is a complex pipeline with multiple au
             p=0.33,
         ),
         SubtleNoise(
-            range=random.randint(5, 10),
+            subtle_range=random.randint(5, 10),
             p=0.33,
         ),
         Jpeg(
@@ -246,7 +246,7 @@ The current default augmentation pipeline is a complex pipeline with multiple au
             p=0.33,
         ),
         Gamma(
-            range=(0.9, 1.1),
+            gamma_range=(0.9, 1.1),
             p=0.33,
         ),
         BindingsAndFasteners(
@@ -290,5 +290,3 @@ The current default augmentation pipeline is a complex pipeline with multiple au
     ]
 
     pipeline = AugraphyPipeline(ink_phase, paper_phase, post_phase)
-
-
