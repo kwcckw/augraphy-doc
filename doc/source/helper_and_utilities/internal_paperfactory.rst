@@ -2,7 +2,7 @@
 PaperFactory
 ************
 
-.. autoclass:: augraphy.utilities.paperfactory.PaperFactory
+.. autoclass:: augraphy.base.paperfactory.PaperFactory
     :members:
     :undoc-members:
     :show-inheritance:
