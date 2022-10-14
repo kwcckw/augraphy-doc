@@ -1,5 +1,5 @@
 ==============================
-Helper and utilities functions
+Helper and Utilities Functions
 ==============================
 
 ----------------
