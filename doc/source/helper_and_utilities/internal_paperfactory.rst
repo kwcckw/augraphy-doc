@@ -7,6 +7,3 @@ PaperFactory
     :undoc-members:
     :show-inheritance:
 
---------
-Overview
---------

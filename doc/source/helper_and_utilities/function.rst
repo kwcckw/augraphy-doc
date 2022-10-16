@@ -7,6 +7,3 @@ Function
     :undoc-members:
     :show-inheritance:
 
---------
-Overview
---------

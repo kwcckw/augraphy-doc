@@ -7,6 +7,3 @@ ForeignAugmentation
     :undoc-members:
     :show-inheritance:
 
---------
-Overview
---------

@@ -7,6 +7,3 @@ ComposePipelines
     :undoc-members:
     :show-inheritance:
 
---------
-Overview
---------

@@ -6,7 +6,3 @@ OverlayBuilder
     :members:
     :undoc-members:
     :show-inheritance:
-
---------
-Overview
---------

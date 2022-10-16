@@ -7,6 +7,3 @@ AugmentationResult
     :undoc-members:
     :show-inheritance:
 
---------
-Overview
---------

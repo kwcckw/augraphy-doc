@@ -6,7 +6,3 @@ AugmentationSequence
     :members:
     :undoc-members:
     :show-inheritance:
-
---------
-Overview
---------
