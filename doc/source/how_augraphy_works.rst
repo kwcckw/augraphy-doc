@@ -327,4 +327,4 @@ Input image:
 
 Augmented image:
 
-.. figure:: how_augraphy_works_examples/simple.png
+.. figure:: how_augraphy_works_examples/complex.png
