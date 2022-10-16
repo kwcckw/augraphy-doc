@@ -48,9 +48,11 @@ An example of simple augmentation pipeline with just single augmentation in each
 
 
 Input image:
+
 .. figure:: how_augraphy_works_examples/input.png
 
 Augmented image:
+
 .. figure:: how_augraphy_works_examples/simple.png
 
 --------------------------
@@ -320,7 +322,9 @@ The current default augmentation pipeline is a complex pipeline with multiple au
     cv2.imshow("augmented",augmented_image)
 
 Input image:
+
 .. figure:: how_augraphy_works_examples/input.png
 
 Augmented image:
+
 .. figure:: how_augraphy_works_examples/simple.png
