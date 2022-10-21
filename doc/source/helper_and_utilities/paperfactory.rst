@@ -7,3 +7,8 @@ PaperFactory
     :undoc-members:
     :show-inheritance:
 
+
+--------
+Overview
+--------
+PaperFactory is the base class to overlay input image with a paper texture.
