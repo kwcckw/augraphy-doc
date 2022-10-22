@@ -78,29 +78,45 @@ An example of log file contents::
 
 Setting the "save_outputs" flag enables the feature to save images in each stage of the augmentation pipeline.
 A folder in a same file level with name of "augmentation_images" will be created. This folder contains another 3 sub-folders, each with name of "ink", "paper", "post" to store on each phase's augmentation images.
-Each image name is in the format of "(index in total images)_(phase)(image index in current phase)_(augmentation name)"
+Each image name is in the format of "(index in total images)_(phase)(image index in current phase)_(augmentation name)".
 
 Example on augmented images in each phase:
 
 Ink Phase:
 
+Ink layer input
+
 .. figure:: augmentationpipeline/augmentation_images/ink/p0_ink0_ink_layer_input.png
 
+After InkBleed augmentation
+
 .. figure:: augmentationpipeline/augmentation_images/ink/p1_ink1_InkBleed.png
+
+After BleedThrough augmentation
 
 .. figure:: augmentationpipeline/augmentation_images/ink/p2_ink2_BleedThrough.png
 
 Paper Phase:
 
+Paper layer input
+
 .. figure:: augmentationpipeline/augmentation_images/paper/p3_paper0_paper_layer_input.png
+
+After DirtyDrum augmentation
 
 .. figure:: augmentationpipeline/augmentation_images/paper/p4_paper2_DirtyDrum.png
 
-Ink Phase:
+Post Phase:
+
+Post layer input (Merged from Ink layer output and Paper layer output)
 
 .. figure:: augmentationpipeline/augmentation_images/post/p5_post0_post_layer_input.png
 
+After DirtyRollers augmentation
+
 .. figure:: augmentationpipeline/augmentation_images/post/p6_post1_DirtyRollers.png
+
+After PencilScribbles augmentation
 
 .. figure:: augmentationpipeline/augmentation_images/post/p7_post2_PencilScribbles.png
 
