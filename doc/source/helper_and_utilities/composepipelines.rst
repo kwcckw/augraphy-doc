@@ -16,7 +16,8 @@ ComposePipelines allows the composition of multiple AugraphyPipelines. The conse
 -------
 Example
 -------
-In this example, ComposePipelines is use to compose three different pipelines.:
+In this example, ComposePipelines is use to compose three different pipelines.
+::
 
     # import libraries
     from augraphy import *
