@@ -1,8 +1,14 @@
+matplotlib
+numba
 numpy >= 1.20.1
 opencv-python
 Pillow
+pre-commit
+pydata-sphinx-theme
+pytablewriter
+pytest
 requests
 scikit-image
+scikit-learn
 scipy
-sklearn
-pydata-sphinx-theme
+tox
