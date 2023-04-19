@@ -68,12 +68,12 @@ class PaperFactory(Augmentation):
                 texture = self.check_paper_edges(texture)
 
                 # If the texture we chose is larger than the paper,
-                # get randomn location that fit into paper size
-                if (texture.shape[0] >= shape[0]) and (texture.shape[1] >= shape[1]):
+                # get random location that fit into paper size
+                if (texture.shape[0] > shape[0]) and (texture.shape[1] > shape[1]):
                     difference_y = texture.shape[0] - shape[0]
                     difference_x = texture.shape[1] - shape[1]
-                    start_y = random.randint(0, difference_y - 1)
-                    start_x = random.randint(0, difference_x - 1)
+                    start_y = random.randint(0, difference_y)
+                    start_x = random.randint(0, difference_x)
                     texture = texture[start_y : start_y + shape[0], start_x : start_x + shape[1]]
 
                 # If the texture we chose is smaller in either dimension than the paper,
@@ -103,12 +103,11 @@ class PaperFactory(Augmentation):
 
     def check_paper_edges(self, texture):
         """Crop image section with better texture.
-        
+
         :param texture: Texture image.
         :type texture: numpy array
         """
-        
-        
+
         ysize, xsize = texture.shape[:2]
 
         # get single channel image
@@ -196,13 +195,13 @@ class PaperFactory(Augmentation):
 
     def resize(self, texture, shape):
         """Scales and zooms a given texture to fit a given shape.
-        
+
         :param texture: Texture image.
         :type texture: numpy array.3.
         :param shape: x and y shape of scaled image.
         :type shape: list or tuple
         """
-        
+
         texture_h = texture.shape[0]
         texture_w = texture.shape[1]
         shape_h = shape[0]

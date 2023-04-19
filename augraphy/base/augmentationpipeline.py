@@ -8,9 +8,9 @@ from glob import glob
 import cv2
 import numpy as np
 
-from augraphy.augmentations.lib import make_white_transparent
 from augraphy.base.augmentationresult import AugmentationResult
 from augraphy.base.augmentationsequence import AugmentationSequence
+from augraphy.utilities.overlaybuilder import OverlayBuilder
 
 
 class AugraphyPipeline:
@@ -22,6 +22,10 @@ class AugraphyPipeline:
     :type paper_phase: base.augmentationsequence or list
     :param post_phase: Collection of Augmentations to apply.
     :type post_phase: base.augmentationsequence or list
+    :param overlay_type: Blending method to print ink into paper.
+    :type overlay_type: string, optional.
+    :param overlay_alpha: The alpha value for certain overlay methods.
+    :type overlay_alpha: float, optional.
     :param ink_color_range: Pair of ints determining the range from which to
            sample the ink color.
     :type ink_color_range: tuple, optional
@@ -32,6 +36,8 @@ class AugraphyPipeline:
     :type save_outputs: bool, optional
     :param log: Flag to enable logging.
     :type log: bool, optional
+    :param random_seed: The initial value for PRNGs used in Augraphy.
+    :type random_seed: int, optional
     """
 
     def __init__(
@@ -39,19 +45,31 @@ class AugraphyPipeline:
         ink_phase,
         paper_phase,
         post_phase,
+        overlay_type="ink_to_paper",
+        overlay_alpha=0.3,
         ink_color_range=(-1, -1),
         paper_color_range=(255, 255),
         save_outputs=False,
         log=False,
+        random_seed=None,
     ):
         """Constructor method"""
         self.ink_phase = self.wrapListMaybe(ink_phase)
         self.paper_phase = self.wrapListMaybe(paper_phase)
         self.post_phase = self.wrapListMaybe(post_phase)
+        self.overlay_type = overlay_type
+        self.overlay_alpha = overlay_alpha
         self.ink_color_range = ink_color_range
         self.paper_color_range = paper_color_range
         self.save_outputs = save_outputs
         self.log = log
+        self.random_seed = random_seed
+
+        # ensure determinism if random_seed set
+        if self.random_seed:
+            random.seed(self.random_seed)
+            np.random.seed(self.random_seed)
+            cv2.setRNGSeed(self.random_seed)
 
         # create directory to store log files
         if self.log:
@@ -74,7 +92,63 @@ class AugraphyPipeline:
         else:
             return augs
 
-    def augment(self, image):
+    def augment(self, image, return_dict=1):
+        """Applies the Augmentations in each phase of the pipeline.
+
+        :param image: The image to apply Augmentations to. Minimum 30x30 pixels.
+        :type image: numpy.array or list
+        :return: 1. A dictionary of AugmentationResults representing the changes in each phase of the pipeline if the input is image.
+                 2. A list contains output images if the input is list of images.
+                 3. A four dimensional numpy array if the input is a four dimensional numpy array (batch size, channels, height, width).
+        :rtype: 1. dictionary
+                2. list
+                3. numpy array (B, C, H, W)
+        :param return_dict: Flag to return output in dictionary format.
+                Not applicable when input is 4 dimensional array.
+                When input is 4 dimensional numpy array, output will be a 4 dimensional array too.
+        :type return_dict: int
+        """
+
+        # image is a list of images
+        if isinstance(image, list):
+            output = []
+            for single_image in image:
+                data = self.augment_single_image(single_image)
+                if return_dict:
+                    output.append(data)
+                else:
+                    output.append(data["output"])
+
+        # image is a 4 dimensional numpy array
+        elif len(image.shape) == 4:
+            batch_size, channels, height, width = image.shape
+            output = np.zeros((batch_size, channels, height, width), dtype=image.dtype)
+            for i in range(batch_size):
+                single_image = image[i].reshape(height, width, channels)
+                output_image = self.augment_single_image(single_image)["output"]
+
+                # output is color image but input is in grayscale, convert output to grayscale
+                if len(output_image.shape) > channels:
+                    output_image = cv2.cvtColor(output_image, cv2.COLOR_BGR2GRAY)
+                # output is in grayscale but input is color image, convert output to color image
+                if len(output_image.shape) != channels:
+                    output_image = cv2.cvtColor(output_image, cv2.COLOR_GRAY2BGR)
+                # rescale image size if the image size is changes after the augmentation
+                if output_image.shape[0] != height or output_image.shape[1] != width:
+                    output_image = cv2.resize(output_image, (width, height), interpolation=cv2.INTER_AREA)
+                output[i] = output_image.reshape(channels, height, width)
+
+        # single image
+        else:
+            data = self.augment_single_image(image)
+            if return_dict:
+                output = data
+            else:
+                output = data["output"]
+
+        return output
+
+    def augment_single_image(self, image):
         """Applies the Augmentations in each phase of the pipeline.
 
         :param image: The image to apply Augmentations to. Minimum 30x30 pixels.
@@ -84,11 +158,35 @@ class AugraphyPipeline:
         :rtype: dictionary
         """
 
+        # Check if image has correct channel
+        if len(image.shape) > 2 and (image.shape[2] != 3):
+            raise Exception(
+                "Image should have channel number of 3 (BGR), but actual dimensions were {}.".format(
+                    image.shape,
+                ),
+            )
+
         # Check that image is the correct size.
         if (image.shape[0] < 30) or (image.shape[1] < 30):
             raise Exception(
                 "Image should have dimensions greater than 30x30, but actual dimensions were {}.".format(
                     image.shape,
+                ),
+            )
+
+        # get and check valid image type ( uint or float)
+        image_type = str(image.dtype)
+        image_max_value = 255
+        if image_type[:5] == "float":
+            if np.max(image) <= 1:
+                image_max_value = 1
+                image = np.uint8(image * 255)
+            else:
+                image = np.uint8(image)
+        elif image_type[:4] != "uint":
+            raise Exception(
+                "Image type should be uint or float, but the image type is {}.".format(
+                    image_type,
                 ),
             )
 
@@ -107,14 +205,17 @@ class AugraphyPipeline:
         # store 30 cache image files
         if len(cache_image_paths) >= 30:
             oldest_index = np.argmin(modified_time)
+            outfilename = cache_folder_path + "image_" + str(file_indices[oldest_index]) + ".png"
             cv2.imwrite(
-                cache_folder_path + "image_" + str(file_indices[oldest_index]) + ".png",
+                outfilename,
                 image,
             )
+
         else:
             current_image_index = len(cache_image_paths)
+            outfilename = cache_folder_path + "image_" + str(current_image_index) + ".png"
             cv2.imwrite(
-                cache_folder_path + "image_" + str(current_image_index) + ".png",
+                outfilename,
                 image,
             )
 
@@ -186,8 +287,8 @@ class AugraphyPipeline:
                 None,
                 self.print_ink_to_paper(
                     data,
-                    data["ink"][-1].result,
-                    data["paper"][-1].result,
+                    data["ink"][-1].result.copy(),
+                    data["paper"][-1].result.copy(),
                 ),
             ),
         )
@@ -195,7 +296,14 @@ class AugraphyPipeline:
         # apply post phase augmentations
         self.apply_phase(data, layer="post", phase=self.post_phase)
 
-        data["output"] = data["post"][-1].result.astype("uint8")
+        # revert to input image type
+        if image_type[:5] == "float":
+            if image_max_value == 1:
+                data["output"] = (data["post"][-1].result.astype(image_type)) / 255
+            else:
+                data["output"] = data["post"][-1].result.astype(image_type)
+        else:
+            data["output"] = data["post"][-1].result.astype("uint8")
 
         # save each phase augmented images
         if self.save_outputs:
@@ -213,7 +321,7 @@ class AugraphyPipeline:
         :param data: A dictionary of AugmentationResults representing the changes in each phase of the pipeline.
         :type data: dictionary
         """
-        
+
         layer_names = ["ink", "paper", "post"]
         ink_layers = data["ink"]
         paper_layers = data["paper"]
@@ -277,7 +385,7 @@ class AugraphyPipeline:
                         n += 1
 
     def get_oneof_data(self, augmentation, result, save_path, layer_name, augmentation_name, i, n):
-        """ Get augmentation information from OneOf augmentation recursively or save the augmented image in disk. 
+        """Get augmentation information from OneOf augmentation recursively or save the augmented image in disk.
 
         :param augmentation: Augmentation object of OneOf augmentation.
         :type augmentation: class instance
@@ -294,8 +402,7 @@ class AugraphyPipeline:
         :param n: Index of current augmented in total number of augmented images.
         :type n: int
         """
-        
-        
+
         current_augmentation = augmentation.augmentations[np.argmax(augmentation.augmentation_probabilities)]
         # sequence inside oneof
         if current_augmentation.__class__.__name__ == "AugmentationSequence":
@@ -313,7 +420,7 @@ class AugraphyPipeline:
         return n
 
     def get_sequence_data(self, augmentation, result, save_path, layer_name, input_augmentation_name, i, n):
-        """ Get augmentation information from AugmentationSequence augmentation recursively or save the augmented image in disk. 
+        """Get augmentation information from AugmentationSequence augmentation recursively or save the augmented image in disk.
 
         :param augmentation: Augmentation object of OneOf augmentation.
         :type augmentation: class instance
@@ -330,7 +437,7 @@ class AugraphyPipeline:
         :param n: Index of current augmented in total number of augmented images.
         :type n: int
         """
-        
+
         s = 0
         for current_augmentation, result in zip(augmentation.augmentations, augmentation.results):
             augmentation_name = copy(input_augmentation_name) + str(s) + "_"
@@ -349,10 +456,11 @@ class AugraphyPipeline:
             # augmentations inside sequence
             else:
                 augmentation_name += current_augmentation.__class__.__name__
-                cv2.imwrite(
-                    save_path + "p" + str(n) + "_" + layer_name + str(i) + "_" + augmentation_name + ".png",
-                    result,
-                )
+                if result is not None:
+                    cv2.imwrite(
+                        save_path + "p" + str(n) + "_" + layer_name + str(i) + "_" + augmentation_name + ".png",
+                        result,
+                    )
                 n += 1
             s += 1
         return n
@@ -424,7 +532,7 @@ class AugraphyPipeline:
 
     def apply_phase(self, data, layer, phase):
         """Applies every augmentation in a phase.
-        
+
         :param data: A dictionary of AugmentationResults representing the changes in each phase of the pipeline.
         :type data: dictionary
         :param layer: The name of current layer or phase.
@@ -473,7 +581,7 @@ class AugraphyPipeline:
 
     def print_ink_to_paper(self, data, overlay, background):
         """Applies the ink layer to the paper layer.
-        
+
         :param data: A dictionary of AugmentationResults representing the changes in each phase of the pipeline.
         :type data: dictionary
         :param overlay: Foreground of overlay process, output from ink phase.
@@ -481,6 +589,13 @@ class AugraphyPipeline:
         :param background: Background of overlay process, output from paper phase.
         :type background: numpy array
         """
+
+        if (self.ink_color_range[0] != -1) or (self.ink_color_range[1] != -1):
+            ink_color = random.randint(self.ink_color_range[0], self.ink_color_range[1])
+        else:
+            ink_color = -1
+        data["log"]["ink_color"] = ink_color
+
         # prevent inconsistency in size between background and overlay
         if overlay.shape[:2] != background.shape[:2]:
             overlay_y, overlay_x = overlay.shape[:2]
@@ -490,47 +605,29 @@ class AugraphyPipeline:
                 interpolation=cv2.INTER_AREA,
             )
 
-        if (self.ink_color_range[0] != -1) or (self.ink_color_range[1] != -1):
-            ink_color = random.randint(self.ink_color_range[0], self.ink_color_range[1])
-        else:
-            ink_color = -1
-
-        data["log"]["ink_color"] = ink_color
-
-        overlay = make_white_transparent(overlay, ink_color)
-        # Split out the transparency mask from the colour info
-        overlay_img = overlay[:, :, :3]  # Grab the BRG planes
-        overlay_mask = overlay[:, :, 3:]  # And the alpha plane
-
-        # Again calculate the inverse mask
-        background_mask = 255 - overlay_mask
-
-        # Turn the single channel alpha masks into three channel, so we can use them as weights
-        if len(overlay.shape) > 2:
-            overlay_mask = cv2.cvtColor(overlay_mask, cv2.COLOR_GRAY2BGR)
-        if len(background_mask.shape) > 2:
-            background_mask = cv2.cvtColor(background_mask, cv2.COLOR_GRAY2BGR)
-        # Convert background to 3 channels if they are in single channel
-        if len(background.shape) < 3:
-            background = cv2.cvtColor(background, cv2.COLOR_GRAY2BGR)
-        # Create a masked out face image, and masked out overlay
-        # We convert the images to floating point in range 0.0 - 1.0
-        background_part = (background * (1.0 / 255.0)) * (background_mask * (1 / 255.0))
-        overlay_part = (overlay_img * (1.0 / 255.0)) * (overlay_mask * (1.0 / 255.0))
-
-        # And finally just add them together, and rescale it back to an 8bit integer image
-        return np.uint8(
-            cv2.addWeighted(background_part, 255.0, overlay_part, 255.0, 0.0),
+        ink_to_paper_builder = OverlayBuilder(
+            overlay_types=self.overlay_type,
+            foreground=overlay,
+            background=background,
+            ntimes=1,
+            nscales=(1, 1),
+            edge="center",
+            edge_offset=0,
+            alpha=self.overlay_alpha,
+            ink_color=ink_color,
         )
+
+        return ink_to_paper_builder.build_overlay()
 
     def __repr__(self):
         r = f"ink_phase = {repr(self.ink_phase)}\n\n"
         r += f"paper_phase = {repr(self.paper_phase)}\n\n"
         r += f"post_phase = {repr(self.post_phase)}\n\n"
-
-        r += f"AugraphyPipeline(ink_phase, paper_phase, post_phase, ink_color_range={self.ink_color_range}, paper_color_range={self.paper_color_range})"
-
+        r += f"AugraphyPipeline(ink_phase, paper_phase, post_phase, overlay_type={self.overlay_type}, overlay_alpha={self.overlay_alpha}, ink_color_range={self.ink_color_range}, paper_color_range={self.paper_color_range}, save_outputs={self.save_outputs}, log={self.log}, random_seed={self.random_seed})"
         return r
 
     def visualize(self):
         print(repr(self))
+
+    def __call__(self, image):
+        return self.augment(image, return_dict=0)

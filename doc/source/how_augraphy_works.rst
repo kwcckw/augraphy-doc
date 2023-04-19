@@ -41,7 +41,7 @@ An example of simple augmentation pipeline with just single augmentation in each
         3,
     )
 
-    augmented_image = pipeline.augment(image)["output"]	
+    augmented_image = pipeline.augment(image)["output"]
 
     cv2.imshow("input image", image)
     cv2.imshow("augmented",augmented_image)

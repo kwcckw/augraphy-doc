@@ -26,7 +26,8 @@ class BindingsAndFasteners(Augmentation):
     :param edge: Which edge of the page the foreground copies should be
         placed on.
     :type edge: string, optional
-    :param edge_offset: Pair of ints to determine how far from the edge of the page to draw the copies.
+    :param edge_offset: Pair of values to determine how far from the edge of the page to draw the copies.
+        The offset value will be in percentage of the image shorter edge if the value is less than 1.
     :type edge_offset: tuple, optional
     :param use_figshare_library: Flag to download foreground images from figshare library.
     :type use_figshare_library: int, optional
@@ -74,13 +75,27 @@ class BindingsAndFasteners(Augmentation):
         :type max_input_value: int
         """
 
-        noise = (
-            lambda x: random.randint(noise_value[0], noise_value[1])
-            if (x < max_input_value and noise_probability > random.random())
-            else x
-        )
-        add_noise = np.vectorize(noise)
-        image_output = add_noise(image)
+        # generate random mask
+        if len(image.shape) > 2:
+            random_value = np.random.random((image.shape[0], image.shape[1], image.shape[2]))
+            random_value2 = np.random.random((image.shape[0], image.shape[1], image.shape[2]))
+        else:
+            random_value = np.random.random((image.shape[0], image.shape[1]))
+            random_value2 = np.random.random((image.shape[0], image.shape[1]))
+
+        indices = np.logical_and(image < max_input_value, random_value <= noise_probability)
+
+        # generate random values in color_range
+        min_array_value = np.min(random_value2)
+        max_array_value = np.max(random_value2)
+        ratio = (noise_value[1] - noise_value[0]) / (max_array_value - min_array_value)
+        # scale random value within range
+        random_value2 = ((ratio * random_value2) + (noise_value[0] - (ratio * min_array_value))).astype("uint8")
+
+        # apply noise with indices
+        image_output = image.copy()
+        image_output[indices] = random_value2[indices]
+
         return image_output
 
     def create_foreground(self, image):
@@ -420,6 +435,7 @@ class BindingsAndFasteners(Augmentation):
                 self.foreground = None
 
             image = image.copy()
+            ysize, xsize = image.shape[:2]
 
             # generate randomized overlay types
             if self.overlay_types == "random":
@@ -454,6 +470,11 @@ class BindingsAndFasteners(Augmentation):
             ntimes = random.randint(self.ntimes[0], self.ntimes[1])
 
             # generate randomized offset
+            if self.edge_offset[0] < 1 and self.edge_offset[1] < 1:
+                self.edge_offset = list(self.edge_offset)
+                self.edge_offset[0] = np.ceil(self.edge_offset[0] * min(ysize, xsize))
+                self.edge_offset[1] = np.ceil(self.edge_offset[1] * min(ysize, xsize))
+
             edge_offset = random.randint(self.edge_offset[0], self.edge_offset[1])
 
             # if user input image path

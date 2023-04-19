@@ -3,6 +3,8 @@ import random
 
 import cv2
 import numpy as np
+from numba import config
+from numba import jit
 from numpy.linalg import norm
 from skimage.filters import threshold_li
 from skimage.filters import threshold_local
@@ -16,12 +18,13 @@ from skimage.filters import threshold_yen
 from sklearn.datasets import make_blobs
 
 
-def rotate_image(mat, angle):
+def rotate_image(mat, angle, white_background=1):
     """Rotates an image (angle in degrees) and expands image to avoid
     cropping.
     """
 
-    mat = cv2.bitwise_not(mat)
+    if white_background:
+        mat = cv2.bitwise_not(mat)
     height, width = mat.shape[:2]  # image shape has 3 dimensions
     image_center = (
         width / 2,
@@ -44,7 +47,10 @@ def rotate_image(mat, angle):
 
     # rotate image with the new bounds and translated rotation matrix
     rotated_mat = cv2.warpAffine(mat, rotation_mat, (bound_w, bound_h))
-    rotated_mat = cv2.bitwise_not(rotated_mat)
+
+    if white_background:
+        rotated_mat = cv2.bitwise_not(rotated_mat)
+
     return rotated_mat
 
 
@@ -61,6 +67,7 @@ def generate_average_intensity(image):
 
 
 # Generate noise to edges of folding
+@jit(nopython=True, cache=True)
 def add_folding_noise(img, side, p=0.1):
     # side = flag to put more noise at certain side
     #   0  = left side
@@ -265,20 +272,51 @@ def chaikin(points):
     return path
 
 
-def smooth(points, iter):
+@jit(nopython=True, cache=True)
+def smooth(points, iterations):
     """
+    Smooth points using chaikin method.
+
     :param points: a list of more than 2 points, where each point is a tuple/array of len=2
     :type points: array
     :param iter: number of times to apply chaikin algorithm
     :type iter: int
     :return:
     """
-    for i in range(iter):
-        points = chaikin(points)
+
+    percent = 0.25
+    for i in range(iterations):
+        current_ysize = points.shape[0]
+        path = np.zeros((current_ysize * 2, 2), dtype="float")
+        # first and last point are the same
+        path[0] = points[0]
+        path[-1] = points[-1]
+        n = 1
+        for i in range(current_ysize - 1):
+            p0 = points[i]
+            p1 = points[i + 1]
+            # distance between x values of two subsequent points
+            dx = p1[0] - p0[0]
+            # distance between y values of two subsequent points
+            dy = p1[1] - p0[1]
+            # creating two new points having 25% and 75% distance from the previous point
+            new_px0, new_py0 = p0[0] + dx * percent, p0[1] + dy * percent
+            new_px1, new_py1 = p0[0] + dx * (1 - percent), p0[1] + dy * (1 - percent)
+
+            # 2 new points per current single point
+            path[n][0] = new_px0
+            path[n][1] = new_py0
+            path[n + 1][0] = new_px1
+            path[n + 1][1] = new_py1
+            n += 2
+
+        # update points for next iteration
+        points = path
+
     return points
 
 
-def add_noise(image, intensity_range=(0.1, 0.2), color_range=(0, 224)):
+def add_noise(image, intensity_range=(0.1, 0.2), color_range=(0, 224), noise_condition=0, image2=None):
     """Applies random noise to the input image.
 
     :param image: The image to noise.
@@ -287,13 +325,41 @@ def add_noise(image, intensity_range=(0.1, 0.2), color_range=(0, 224)):
     :type intensity_range: tuple, optional
     :param color_range: Pair of bounds for 8-bit colors.
     :type color_range: tuple, optional
+    :param noise_condition: Condition to apply noise mask.
+    :type noise_condition: int, optional
+    :param image2: Image for the noise evaluation.
+    :type image2: numpy.array, optional
     """
 
-    intensity = random.uniform(intensity_range[0], intensity_range[1])
-    noise = lambda x: random.randint(color_range[0], color_range[1]) if (x == 0 and random.random() < intensity) else x
-    add_noise = np.vectorize(noise)
+    # check not None and use image2 as checking image
+    if image2 is not None:
+        checking_image = image2
+    else:
+        checking_image = image
 
-    return add_noise(image)
+    random_value = np.random.uniform(0, 1, size=image.shape)
+    random_value2 = np.random.randint(color_range[0], color_range[1] + 1, size=image.shape)
+
+    intensity = random.uniform(intensity_range[0], intensity_range[1])
+
+    # find indices where sobelized image value == 255 and random value < intensity
+    if noise_condition == 0:
+        condition_evaluation = checking_image == 0
+    elif noise_condition == 1:
+        condition_evaluation = checking_image == 255
+    elif noise_condition == 2:
+        condition_evaluation = checking_image > 255
+
+    condition_evaluation2 = random_value < intensity
+    indices = np.logical_and(condition_evaluation, condition_evaluation2)
+
+    # output
+    image_noise = image.copy()
+
+    # apply noise with indices
+    image_noise[indices] = random_value2[indices]
+
+    return image_noise
 
 
 def _create_blob(
@@ -477,7 +543,7 @@ def binary_threshold(
         return grayscale
 
     if threshold_arguments:
-        # get input arguments for threhold function
+        # get input arguments for threshold function
         input_arguments = ""
         for input_argument in threshold_arguments:
             # for string argument value

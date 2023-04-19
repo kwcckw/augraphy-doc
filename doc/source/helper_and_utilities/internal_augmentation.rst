@@ -11,4 +11,4 @@ Augmentation
 --------
 Overview
 --------
-Augmentation is the base class for all augmentations. 
+Augmentation is the base class for all augmentations.

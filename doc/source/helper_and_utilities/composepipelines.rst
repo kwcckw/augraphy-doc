@@ -24,28 +24,28 @@ In this example, ComposePipelines is use to compose three different pipelines.
     import cv2
     import numpy as np
     from augraphy.utilities.composepipelines import ComposePipelines
-    
+
     # initialize pipeline1
     ink_phase1   = [InkBleed(p=1)]
     paper_phase1 = [DirtyRollers(p=1)]
     post_phase1  = [WaterMark(p=1)]
     pipeline1    = AugraphyPipeline(ink_phase1, paper_phase1, post_phase1)
-    
+
     # initialize pipeline2
     ink_phase2   = [BleedThrough(p=1)]
     paper_phase2 = [DirtyDrum(p=1)]
     post_phase2  = [Faxify(p=1)]
     pipeline2    = AugraphyPipeline(ink_phase2, paper_phase2, post_phase2)
-    
+
     # initialize pipeline3
     ink_phase3   = [Letterpress(p=1)]
     paper_phase3 = [BadPhotoCopy(p=1)]
     post_phase3  = [Folding(p=1)]
     pipeline3    = AugraphyPipeline(ink_phase3, paper_phase3, post_phase3)
-    
+
     # compose pipelines
     compose_pipeline = ComposePipelines([pipeline1, pipeline2, pipeline3])
-    
+
     # create input image
     image = np.full((1200, 1200,3), 250, dtype="uint8")
     cv2.putText(
@@ -57,7 +57,7 @@ In this example, ComposePipelines is use to compose three different pipelines.
         0,
         3,
     )
-    
+
     # augment image
     augmented_image = compose_pipeline(image)["pipeline2-output"]
 

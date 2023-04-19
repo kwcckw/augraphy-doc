@@ -3,6 +3,10 @@ import random
 
 import cv2
 import numpy as np
+from numba import config
+from numba import jit
+
+from augraphy.augmentations.lib import make_white_transparent
 
 
 class OverlayBuilder:
@@ -18,16 +22,18 @@ class OverlayBuilder:
     :param background: The document.
     :type background: numpy array
     :param ntimes: Number copies of the foreground image to draw.
-    :type ntimes: int
+    :type ntimes: int, optional
     :param nscales: Scales of foreground image size.
     :type nscales: tuple, optional
     :param edge: Which edge of the page the foreground copies should be
         placed on. Selections included left, right, top, bottom, enter, random.
-    :type edge: string
+    :type edge: string, optional
     :param edge_offset: How far from the edge of the page to draw the copies.
-    :type edge_offset: int
-    :param alpha: Alpha value for alpha overlay type.
-    :type alpha: float
+    :type edge_offset: int, optional
+    :param alpha: Alpha value for overlay methods that uses alpha in the blending.
+    :type alpha: float, optional
+    :param ink_color: Ink color value for ink_to_paper overlay type.
+    :type ink_color: int, optional
     """
 
     def __init__(
@@ -40,6 +46,7 @@ class OverlayBuilder:
         edge="center",
         edge_offset=0,
         alpha=0.3,
+        ink_color=-1,
     ):
         self.overlay_types = overlay_types
         self.foreground = foreground
@@ -49,13 +56,16 @@ class OverlayBuilder:
         self.edge = edge
         self.edge_offset = max(0, edge_offset)  # prevent negative
         self.alpha = alpha
+        self.ink_color = ink_color
 
         # set valid edge type
         if edge not in ["center", "random", "left", "right", "top", "bottom"]:
             self.edge = "center"
 
+        # most of the blending methods are adapted here: https://github.com/flrs/blend_modes
         # set valid overlay types
         if overlay_types not in [
+            "ink_to_paper",
             "min",
             "max",
             "mix",
@@ -78,7 +88,7 @@ class OverlayBuilder:
 
     def compute_offsets(self, foreground):
         """Determine where to place the foreground image copies
-        
+
         :param foreground: The image to overlay on the background document.
         :type foreground: numpy array
         """
@@ -99,7 +109,7 @@ class OverlayBuilder:
 
     def check_size(self, img_foreground, img_background, center=None):
         """Check the fitting size of foreground to background
-        
+
         :param img_foreground: The image to overlay on the background document.
         :type img_foreground: numpy array
         :param img_background: The background document.
@@ -246,21 +256,82 @@ class OverlayBuilder:
 
         return img_foreground, center
 
-    def compose_alpha(self, img_alpha_background, img_alpha_foreground):
+    @staticmethod
+    @jit(nopython=True, cache=True)
+    def compose_alpha(img_alpha_background, img_alpha_foreground, alpha):
         """Calculate alpha composition ratio between two images.
-        
+
         :param img_alpha_background: The background image alpha layer.
         :type img_alpha_background: numpy array
         :param img_alpha_foreground: The foreground image alpha layer.
         :type img_alpha_foreground: numpy array
+        :param alpha: Alpha value for the blending process.
+        :type alpha: float
         """
 
-        comp_alpha = np.minimum(img_alpha_background, img_alpha_foreground) * self.alpha
+        comp_alpha = np.minimum(img_alpha_background, img_alpha_foreground) * alpha
         new_alpha = img_alpha_background + (1.0 - img_alpha_foreground) * comp_alpha
-        np.seterr(divide="ignore", invalid="ignore")
         ratio = comp_alpha / new_alpha
-        ratio[ratio == np.NAN] = 0.0
+
         return ratio
+
+    def ink_to_paper_blend(
+        self,
+        overlay_background,
+        base,
+        new_foreground,
+        xstart,
+        xend,
+        ystart,
+        yend,
+    ):
+        """Apply blending using default ink to paper printing method.
+
+        :param overlay_background: Background image.
+        :type overlay_background: numpy array
+        :param base: A patch of background image.
+        :type base: numpy array
+        :param new_foreground: Foreground_image.
+        :type new_foreground: numpy array
+        :param xstart: x start point of the image patch.
+        :type xstart: int
+        :param xend: x end point of the image patch.
+        :type xend: int
+        :param ystart: y start point of the image patch.
+        :type ystart: int
+        :param yend: y end point of the image patch.
+        :type yend: int
+        """
+
+        foreground = make_white_transparent(new_foreground, self.ink_color)
+        # Split out the transparency mask from the colour info
+        overlay_img = foreground[:, :, :3]  # Grab the BRG planes
+        overlay_mask = foreground[:, :, 3:]  # And the alpha plane
+
+        # Turn the single channel alpha masks into three channel, so we can use them as weights
+        if len(foreground.shape) > 2:
+            overlay_mask = cv2.cvtColor(overlay_mask, cv2.COLOR_GRAY2BGR)
+
+        # Again calculate the inverse mask
+        background_mask = 255 - overlay_mask
+
+        # Convert background to 3 channels if they are in single channel
+        if len(base.shape) < 3:
+            base = cv2.cvtColor(base, cv2.COLOR_GRAY2BGR)
+
+        # Create a masked out face image, and masked out overlay
+        # We convert the images to floating point in range 0.0 - 1.0
+        background_part = (base * (1.0 / 255.0)) * (background_mask * (1 / 255.0))
+        overlay_part = (overlay_img * (1.0 / 255.0)) * (overlay_mask * (1.0 / 255.0))
+
+        # And finally just add them together, and rescale it back to an 8bit integer image
+        image_printed = np.uint8(
+            cv2.addWeighted(background_part, 255.0, overlay_part, 255.0, 0.0),
+        )
+
+        overlay_background[ystart:yend, xstart:xend] = image_printed
+
+        return overlay_background
 
     def mix_blend(
         self,
@@ -271,7 +342,7 @@ class OverlayBuilder:
         fg_width,
     ):
         """Apply blending using cv2.seamlessClone.
-        
+
         :param overlay_background: The background image.
         :type overlay_background: numpy array
         :param new_foreground: The foreground iamge of overlaying process.
@@ -316,7 +387,7 @@ class OverlayBuilder:
         fg_width,
     ):
         """Apply blending using min or max gray value.
-        
+
         :param base: Background image.
         :type base: numpy array
         :param base_gray: Background image in grayscale.
@@ -331,21 +402,18 @@ class OverlayBuilder:
         :type fg_width: int
         """
 
-        # can be further vectorized here, need to think about it
-        for y in range(fg_height):
-            for x in range(fg_width):
-                if self.overlay_types == "min":
-                    check_condition = new_foreground_gray[y, x] < base_gray[y, x]
-                else:
-                    check_condition = new_foreground_gray[y, x] > base_gray[y, x]
+        if self.overlay_types == "min":
+            indices = new_foreground_gray < base_gray
+        else:
+            indices = new_foreground_gray > base_gray
 
-                if check_condition:  # foreground is darker, get value from foreground
-                    # foreground is colour but base in gray
-                    if len(new_foreground.shape) > len(base.shape):
-                        base[y, x] = new_foreground_gray[y, x]
-                    # same channel number
-                    else:
-                        base[y, x] = new_foreground[y, x]
+        # for colour image
+        if len(base.shape) > 2:
+            for i in range(base.shape[2]):
+                base[:, :, i][indices] = new_foreground[:, :, i][indices]
+        # for grayscale
+        else:
+            base[indices] = new_foreground_gray[indices]
 
     def normal_blend(
         self,
@@ -356,9 +424,63 @@ class OverlayBuilder:
         xend,
         ystart,
         yend,
+        alpha,
     ):
         """Apply blending using input alpha value (normal method).
-        
+
+        :param overlay_background: Background image.
+        :type overlay_background: numpy array
+        :param base: A patch of background image.
+        :type base: numpy array
+        :param new_foreground: Foreground_image.
+        :type new_foreground: numpy array
+        :param xstart: x start point of the image patch.
+        :type xstart: int
+        :param xend: x end point of the image patch.
+        :type xend: int
+        :param ystart: y start point of the image patch.
+        :type ystart: int
+        :param yend: y end point of the image patch.
+        :type yend: int
+        :param alpha: Alpha value of the foreground.
+        :type alpha: float
+        """
+
+        # convert to float (0-1)
+        base_norm = base / 255.0
+        foreground_norm = new_foreground / 255.0
+
+        # get alpha layer from base if there is any
+        if len(base_norm.shape) > 3:
+            base_alpha = (base_norm[:, :, 3] * 255).astype("uint8")
+            base_alpha = cv2.cvtColor(base_alpha, cv2.COLOR_GRAY2BGR) / 255
+        else:
+            base_alpha = 1
+
+        # blend by alpha value
+        img_blended = (foreground_norm * self.alpha) + (base_norm * base_alpha * (1 - alpha))
+
+        # normalized by alpha value
+        img_blended_norm = img_blended / (self.alpha + (base_alpha * (1 - alpha)))
+
+        # convert blended image back to uint8
+        img_blended_norm = (img_blended_norm * 255.0).astype("uint8")
+
+        # add patch of blended image back to background
+        overlay_background[ystart:yend, xstart:xend] = img_blended_norm
+
+    def various_blend(
+        self,
+        overlay_background,
+        base,
+        new_foreground,
+        xstart,
+        xend,
+        ystart,
+        yend,
+    ):
+        """Apply blending using input alpha value (multiple methods).
+
         :param overlay_background: Background image.
         :type overlay_background: numpy array
         :param base: A patch of background image.
@@ -379,76 +501,17 @@ class OverlayBuilder:
         base_norm = base / 255.0
         foreground_norm = new_foreground / 255.0
 
-        # add alpha value of base and foreground
-        img_base_alpha = np.zeros_like(base_norm) + 1.0
-        img_foreground_alpha = np.zeros_like(foreground_norm) + self.alpha
-
-        # blend base and foreground
-        img_blended = (foreground_norm * img_foreground_alpha) + (
-            base_norm * img_base_alpha * (1 - img_foreground_alpha)
-        )
-
-        # normalized by alpha value
-        img_blended_norm = img_blended / (img_foreground_alpha + img_base_alpha * (1 - img_foreground_alpha))
-
-        # convert blended image back to uint8
-        img_blended_norm = (img_blended_norm * 255.0).astype("uint8")
-
-        # add patch of blended image back to background
-        overlay_background[ystart:yend, xstart:xend] = img_blended_norm
-
-    def various_blend(
-        self,
-        overlay_background,
-        base,
-        new_foreground,
-        xstart,
-        xend,
-        ystart,
-        yend,
-    ):
-        """Apply blending using input alpha value (multiple methods).
-        
-        :param overlay_background: Background image.
-        :type overlay_background: numpy array
-        :param base: A patch of background image.
-        :type base: numpy array
-        :param new_foreground: Foreground_image.
-        :type new_foreground: numpy array
-        :param xstart: x start point of the image patch.
-        :type xstart: int
-        :param xend: x end point of the image patch.
-        :type xend: int
-        :param ystart: y start point of the image patch.
-        :type ystart: int
-        :param yend: y end point of the image patch.
-        :type yend: int  
-        """
-
-        # convert to float (0-1)
-        base_norm = base / 255.0
-        foreground_norm = new_foreground / 255.0
-
+        check_alpha_ratio = 0
         # get alpha layer (if any)
-        if len(base_norm.shape) > 3:
+        if len(base_norm.shape) > 3 and len(foreground_norm.shape) > 3:
             img_base_alpha = base_norm[:, :, 3]
-        else:
-            img_base_alpha = np.ones(
-                (base_norm.shape[0], base_norm.shape[1]),
-                dtype="float",
-            )
-
-        # get alpha layer (if any)
-        if len(foreground_norm.shape) > 3:
             img_foreground_alpha = foreground_norm[:, :, 3]
-        else:
-            img_foreground_alpha = np.ones(
-                (foreground_norm.shape[0], foreground_norm.shape[1]),
-                dtype="float",
-            )
+            check_alpha_ratio = 1
 
-        # compose alpha ratio from background and foreground alpha value
-        ratio = self.compose_alpha(img_base_alpha, img_foreground_alpha)
+            # compose alpha ratio from background and foreground alpha value
+            ratio = self.compose_alpha(img_base_alpha, img_foreground_alpha, self.alpha)
+            # remove infinity value due to zero division
+            ratio[ratio == np.inf] = 0
 
         # compute alpha value
         if self.overlay_types == "lighten":
@@ -470,8 +533,11 @@ class OverlayBuilder:
             comp_value = 1.0 - (1.0 - base_norm[:, :, :3]) * (1.0 - foreground_norm[:, :, :3])
 
         elif self.overlay_types == "dodge":
+            # prevent zero division
+            divisor = 1.0 - foreground_norm[:, :, :3]
+            divisor[divisor == 0.0] = 1.0
             comp_value = np.minimum(
-                base_norm[:, :, :3] / (1.0 - foreground_norm[:, :, :3]),
+                base_norm[:, :, :3] / divisor,
                 1.0,
             )
 
@@ -522,29 +588,47 @@ class OverlayBuilder:
             inverse_base_foreground_product = 1 - (2 * (1 - base_norm[:, :, :3]) * (1 - foreground_norm[:, :, :3]))
             comp_value = (base_less * base_foreground_product) + (base_greater_equal * inverse_base_foreground_product)
 
-        # get reshaped ratio
-        ratio_rs = np.reshape(
-            np.repeat(ratio, 3),
-            (base_norm.shape[0], base_norm.shape[1], 3),
-        )
-
-        # blend image
-        if self.overlay_types == "addition" or self.overlay_types == "subtract":
-            # clip value for addition or subtract
-            img_blended = np.clip(
-                (comp_value * ratio_rs) + (base_norm * (1.0 - ratio_rs)),
-                0.0,
-                1.0,
+        # apply alpha ratio only if both images have alpha layer
+        if check_alpha_ratio:
+            # get reshaped ratio
+            ratio_rs = np.reshape(
+                np.repeat(ratio, 3),
+                (base_norm.shape[0], base_norm.shape[1], 3),
             )
 
+            # blend image
+            if self.overlay_types == "addition" or self.overlay_types == "subtract":
+                # clip value for addition or subtract
+                img_blended = np.clip(
+                    (comp_value * ratio_rs) + (base_norm * (1.0 - ratio_rs)),
+                    0.0,
+                    1.0,
+                )
+            else:
+                img_blended = self.apply_ratio(comp_value, base_norm, ratio_rs)
         else:
-            img_blended = (comp_value * ratio_rs) + (base_norm * (1.0 - ratio_rs))
+            img_blended = comp_value
 
         # get blended image in uint8
         img_blended = (img_blended * 255).astype("uint8")
 
         # add patch of blended image back to background
         overlay_background[ystart:yend, xstart:xend] = img_blended
+
+    @staticmethod
+    @jit(nopython=True, cache=True)
+    def apply_ratio(comp_value, base_norm, ratio_rs):
+        """Function to apply alpha ratio to both foreground and background image
+
+        :param comp_value: The resulting image from blending process.
+        :type comP_value: numpy array
+        :param base_norm: The background.
+        :type base_norm: numpy array
+        :param ratio_rs: Alpha ratio for each pixel.
+        :type ratio_rs: numpy array
+        """
+
+        return (comp_value * ratio_rs) + (base_norm * (1.0 - ratio_rs))
 
     def apply_overlay(
         self,
@@ -557,7 +641,7 @@ class OverlayBuilder:
         xend,
     ):
         """Applies overlay from foreground to background.
-        
+
         :param overlay_background: Background image.
         :type overlay_background: numpy array
         :param offset_width: Offset width value to the overlay process.
@@ -567,7 +651,7 @@ class OverlayBuilder:
         :param ystart: y start point of the overlaying process.
         :type ystart: int
         :param yend: y end point of the overlaying process.
-        :type yend: int 
+        :type yend: int
         :param xstart: x start point of the overlaying process.
         :type xstart: int
         :param xend: x end point of the overlaying process.
@@ -696,8 +780,20 @@ class OverlayBuilder:
             else:
                 new_foreground_gray = new_foreground
 
+            # ink to paper overlay type
+            if self.overlay_types == "ink_to_paper":
+                self.ink_to_paper_blend(
+                    overlay_background,
+                    base,
+                    new_foreground,
+                    xstart,
+                    xend,
+                    ystart,
+                    yend,
+                )
+
             # min or max overlay types
-            if self.overlay_types == "min" or self.overlay_types == "max":
+            elif self.overlay_types == "min" or self.overlay_types == "max":
                 self.min_max_blend(
                     base,
                     base_gray,
@@ -727,6 +823,7 @@ class OverlayBuilder:
                     xend,
                     ystart,
                     yend,
+                    self.alpha,
                 )
 
             # overlay types:

@@ -29,7 +29,7 @@ class ImageOverlay(Augmentation):
 
     def workspace(self, background):
         """Creates an empty image on which to do the overlay operation
-        
+
         :param background: The background document image.
         :type background: np.array
         """
@@ -44,7 +44,7 @@ class ImageOverlay(Augmentation):
 
     def layerForeground(self, ambient, xloc, yloc):
         """Put self.foreground at (xloc,yloc) on ambient
-        
+
         :param ambient: The initial ambient image.
         :type ambient: np.array
         :param xloc: Coordinate of x start location.
@@ -69,7 +69,7 @@ class ImageOverlay(Augmentation):
         """Centers the background image over workspace, then places foreground
         somewhere on the workspace, and finally crops to the
         background dimension
-        
+
         :param background: Background image of overlaying process.
         :type background: np.array
         :param foreground: Foreground image of overlaying process.
