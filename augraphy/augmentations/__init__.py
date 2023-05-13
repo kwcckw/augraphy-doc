@@ -23,8 +23,8 @@ from augraphy.augmentations.lowinkrandomlines import LowInkRandomLines
 from augraphy.augmentations.markup import Markup
 from augraphy.augmentations.noisetexturize import NoiseTexturize
 from augraphy.augmentations.pageborder import PageBorder
-from augraphy.augmentations.pencilscribbles import PencilScribbles
 from augraphy.augmentations.quasicrystal import PatternGenerator
+from augraphy.augmentations.scribbles import Scribbles
 from augraphy.augmentations.subtlenoise import SubtleNoise
 from augraphy.augmentations.voronoi import VoronoiTessellation
 from augraphy.augmentations.watermark import WaterMark
@@ -38,6 +38,7 @@ __all__ = [
     "Brightness",
     "BrightnessTexturize",
     "ColorPaper",
+    "DelaunayTessellation",
     "DirtyDrum",
     "DirtyRollers",
     "Dithering",
@@ -55,10 +56,9 @@ __all__ = [
     "Markup",
     "NoiseTexturize",
     "PageBorder",
-    "PencilScribbles",
-    "SubtleNoise",
-    "WaterMark",
-    "DelaunayTessellation",
-    "VoronoiTessellation",
     "PatternGenerator",
+    "Scribbles",
+    "SubtleNoise",
+    "VoronoiTessellation",
+    "WaterMark",
 ]

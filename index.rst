@@ -21,3 +21,4 @@ Treatments applied by Augraphy fabricate realistic documents that appear to have
    doc/source/example_usage
    doc/source/list_of_augmentations
    doc/source/helper_and_utilities
+   doc/source/deep_learning_frameworks_integration
