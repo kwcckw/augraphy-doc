@@ -8,6 +8,6 @@ Augraphy pipeline can be integrated in the augmentation process of deep learning
 .. toctree::
    :maxdepth: 1
 
-   examples/pytorch_integration_classification_example.ipynb
-   examples/tensorflow_integration_classification_example.ipynb
+   ../../examples/pytorch_integration_classification_example.ipynb
+   ../../examples/tensorflow_integration_classification_example.ipynb
 
