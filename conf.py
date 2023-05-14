@@ -40,7 +40,8 @@ extensions = [
 nbsphinx_timeout = -1
 
 # source_suffix = ['.rst', '.md']
-source_suffix = [".rst", ".ipynb"]
+# source_suffix = [".rst", ".ipynb"]
+source_suffix = ".rst"
 
 # The master toctree document.
 master_doc = "index"
