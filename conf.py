@@ -37,6 +37,7 @@ extensions = [
     "sphinx.ext.autosummary",
     "nbsphinx",
 ]
+nbsphinx_timeout = -1
 
 # source_suffix = ['.rst', '.md']
 source_suffix = [".rst", ".ipynb"]
