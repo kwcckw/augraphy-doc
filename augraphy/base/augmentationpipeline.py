@@ -3,6 +3,7 @@ import random
 import time
 from copy import copy
 from copy import deepcopy
+from enum import Enum
 from glob import glob
 
 import cv2
@@ -11,6 +12,29 @@ import numpy as np
 from augraphy.base.augmentationresult import AugmentationResult
 from augraphy.base.augmentationsequence import AugmentationSequence
 from augraphy.utilities.overlaybuilder import OverlayBuilder
+
+
+class OverlayTypes(str, Enum):
+    """Contains methods to overlay ink into paper"""
+
+    ink_to_paper = "ink_to_paper"
+    min = "min"
+    max = "max"
+    mix = "mix"
+    normal = "normal"
+    lighten = "lighten"
+    darken = "darken"
+    addition = "addition"
+    subtract = "subtract"
+    difference = "difference"
+    screen = "screen"
+    dodge = "dodge"
+    multiply = "multiply"
+    divide = "divide"
+    hard_light = "hard_light"
+    grain_extract = "grain_extract"
+    grain_merge = "grain_merge"
+    overlay = "overlay"
 
 
 class AugraphyPipeline:
