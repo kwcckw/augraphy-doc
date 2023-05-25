@@ -24,12 +24,13 @@ from augraphy.augmentations.markup import Markup
 from augraphy.augmentations.noisetexturize import NoiseTexturize
 from augraphy.augmentations.pageborder import PageBorder
 from augraphy.augmentations.quasicrystal import PatternGenerator
+from augraphy.augmentations.reflectedlight import ReflectedLight
+from augraphy.augmentations.rescale import Rescale
 from augraphy.augmentations.scribbles import Scribbles
 from augraphy.augmentations.shadowcast import ShadowCast
 from augraphy.augmentations.subtlenoise import SubtleNoise
 from augraphy.augmentations.voronoi import VoronoiTessellation
 from augraphy.augmentations.watermark import WaterMark
-
 
 __all__ = [
     "BadPhotoCopy",
@@ -58,6 +59,8 @@ __all__ = [
     "NoiseTexturize",
     "PageBorder",
     "PatternGenerator",
+    "ReflectedLight",
+    "Rescale",
     "Scribbles",
     "ShadowCast",
     "SubtleNoise",
