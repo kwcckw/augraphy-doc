@@ -10,7 +10,7 @@ ColorShift
 --------
 Overview
 --------
-The Colorshift augmentation shifts each color channel by certain offsets to create a shifted color effect.
+The ColorShift augmentation shifts each color channel by certain offsets to create a shifted color effect.
 
 Initially, a clean image with single line of text is created.
 
@@ -70,4 +70,4 @@ Code example:
 
 Augmented image:
 
-.. figure:: augmentations/colorshift/colorshift.png
+.. figure:: augmentations/colorshift/color_shift.png
