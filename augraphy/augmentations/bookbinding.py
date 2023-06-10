@@ -68,24 +68,22 @@ class BookBinding(Augmentation):
         img_dist = np.transpose(img_dist.reshape(cols, rows))
         img_d = img_dist + (radius * (1 - math.cos(angle)))
         img_mask = (img_dist / img_d) ** 2
-        
+
         min_value = np.min(img_mask)
         max_value = np.max(img_mask)
-        
+
         # rescale maskto 0.2 - 1
         min_intensity = 0.2
         max_intensity = 1.0
         img_mask = ((img_mask - min_value) / (max_value - min_value)) * (max_intensity - min_intensity) + min_intensity
-        
-        
+
         # rescale 0- 1 to prevent darken of the image
-#        img_mask = (img_mask - np.min(img_mask)) / (np.max(img_mask) - np.min(img_mask))
+        #        img_mask = (img_mask - np.min(img_mask)) / (np.max(img_mask) - np.min(img_mask))
 
-#        from matplotlib import pyplot as plt
-#        plt.figure()
-#        plt.imshow(img_mask)
-#        raise ValueError('a')
-
+        #        from matplotlib import pyplot as plt
+        #        plt.figure()
+        #        plt.imshow(img_mask)
+        #        raise ValueError('a')
 
         # overlay mask of shadow to input image
         ob = OverlayBuilder(
@@ -195,95 +193,93 @@ class BookBinding(Augmentation):
 
         return img_output
 
-
     def curve_down_processing(self, image):
-        
-        
+
         radius = random.randint(self.radius_range[0], self.radius_range[1])
         angle = 30
-        curve_value = random.randint(self.curve_range[0],self.curve_range[1])
+        curve_value = random.randint(self.curve_range[0], self.curve_range[1])
 
         added_border_height = int(image.shape[0] / 20)
-        
+
         # right side of image
         # create borders
         page_border = PageBorder(
-                page_border_width_height=(int(added_border_height / 2), -added_border_height),
-                page_border_color=(0, 0, 0),
-                page_border_background_color=(0, 0, 0),
-                page_numbers=random.randint(8, 12),
-                page_rotation_angle_range=(3, 5),
-                curve_frequency=(1, 3),
-                curve_height=(1, 3),
-                curve_length_one_side=(10, 10),
-                same_page_border=0,
-                numba_jit=1,
-                p=1,
-            )
+            page_border_width_height=(int(added_border_height / 2), -added_border_height),
+            page_border_color=(0, 0, 0),
+            page_border_background_color=(0, 0, 0),
+            page_numbers=random.randint(8, 12),
+            page_rotation_angle_range=(3, 5),
+            curve_frequency=(1, 3),
+            curve_height=(1, 3),
+            curve_length_one_side=(10, 10),
+            same_page_border=0,
+            numba_jit=1,
+            p=1,
+        )
 
-        image_added_border_right = page_border(np.rot90(image,3))
-        image_added_border_right = np.rot90(image_added_border_right[added_border_height:,:])
-        
+        image_added_border_right = page_border(np.rot90(image, 3))
+        image_added_border_right = np.rot90(image_added_border_right[added_border_height:, :])
+
         # flipud to create a better curvy shape
         image_shadow_right = self.add_book_shadow(np.flipud(image_added_border_right), radius, angle)
         image_right = np.flipud(self.curve_page(image_shadow_right, curve_value))
-        
+
         # left side of image
         # create borders
         page_border = PageBorder(
-                page_border_width_height=(int(-added_border_height / 2), -added_border_height),
-                page_border_color=(0, 0, 0),
-                page_border_background_color=(0, 0, 0),
-                page_numbers=random.randint(6, 8),
-                page_rotation_angle_range=(2, 2),
-                curve_frequency=(1, 3),
-                curve_height=(1, 3),
-                curve_length_one_side=(30, 90),
-                same_page_border=0,
-                numba_jit=1,
-                p=1,
-            )
+            page_border_width_height=(int(-added_border_height / 2), -added_border_height),
+            page_border_color=(0, 0, 0),
+            page_border_background_color=(0, 0, 0),
+            page_numbers=random.randint(6, 8),
+            page_rotation_angle_range=(2, 2),
+            curve_frequency=(1, 3),
+            curve_height=(1, 3),
+            curve_length_one_side=(30, 90),
+            same_page_border=0,
+            numba_jit=1,
+            p=1,
+        )
 
         image_added_border_left = page_border(np.fliplr(image))
-        
+
         from matplotlib import pyplot as plt
+
         plt.figure()
         plt.imshow(image_added_border_left)
         plt.title("after page broder")
-        
+
         image_shadow_left = np.fliplr(self.add_book_shadow(image_added_border_left, radius, angle))
-        
-        image_shadow_left = image_shadow_left[:,:-int(added_border_height / 2)]
-        
+
+        image_shadow_left = image_shadow_left[:, : -int(added_border_height / 2)]
+
         plt.figure()
         plt.imshow(image_shadow_left)
         plt.title("after shadow")
-        
+
         image_left = self.curve_page(np.fliplr(np.flipud(image_shadow_left)), curve_value * 3)
-        
+
         from matplotlib import pyplot as plt
+
         plt.figure()
         plt.imshow(image_left)
         plt.title("after curve page")
-        
-        
+
         # further bend left image by using perspective transform
         ysize, xsize = image_left.shape[:2]
         curve_xsize = curve_value
-        
-#        random.randint(int(xsize / 10), int(xsize / 8))
+
+        #        random.randint(int(xsize / 10), int(xsize / 8))
 
         # bending size
-#
-#        curve_xsize = curve_value
-#
-#        # right image x and y size
+        #
+        #        curve_xsize = curve_value
+        #
+        #        # right image x and y size
         cysize, cxsize = image_right.shape[:2]
-#
-#        # source and target points of the bending process
+        #
+        #        # source and target points of the bending process
         source_points = np.float32([[0, 0], [xsize, 0], [xsize, ysize], [0, ysize]])
         target_points = np.float32([[curve_xsize, 0], [xsize, 0], [xsize, ysize], [curve_xsize, ysize]])
-
 
         image_left = np.fliplr(np.flipud(image_left.astype("float"))) / 255
 
@@ -291,20 +287,18 @@ class BookBinding(Augmentation):
         plt.imshow(image_left)
         plt.title("left1")
 
-#        image_left = np.fliplr(np.flipud(image_left))
+        #        image_left = np.fliplr(np.flipud(image_left))
         # get bended image
         image_left = (four_point_transform(image_left, source_points, target_points, cxsize, cysize) * 255).astype(
             "uint8",
         )
-        
+
         plt.figure()
         plt.imshow(image_left)
         plt.title("left2")
-        
-        
-        
+
         # remove the empty section after the transform
-#        image_left = image_left[:, curve_xsize:]
+        #        image_left = image_left[:, curve_xsize:]
         # generate range of mirror and crop image based on mirror size
         mirror_range = np.random.uniform(self.mirror_range[0], self.mirror_range[1])
         image_left = image_left[:cysize, image_left.shape[1] - int(image_left.shape[1] * mirror_range) :]
@@ -315,7 +309,6 @@ class BookBinding(Augmentation):
         plt.imshow(image_left)
         plt.title("left 3")
 
-
         # get their y difference
         y_diff = cysize - ysize
 
@@ -324,20 +317,16 @@ class BookBinding(Augmentation):
             "uint8",
         )
 
-
         # merged left image and right image
         image_output[:, :xsize] = image_left
 
-#        if y_diff != 0:
-#            image_output[:-y_diff, xsize:] = image_right
-#        else:
-#            
-            
+        #        if y_diff != 0:
+        #            image_output[:-y_diff, xsize:] = image_right
+        #        else:
+        #
+
         image_output[:, xsize:] = image_right
 
-
-        
-        
         return image_output
 
     def __call__(self, image, layer=None, force=False):
@@ -349,13 +338,12 @@ class BookBinding(Augmentation):
         else:
             curve_down = self.curling_direction
 
-
         if curve_down:
             image_output = self.curve_down_processing(image)
-            
+
             return image_output
 
-        '''
+        """
 
 
         radius = random.randint(self.radius_range[0], self.radius_range[1])
@@ -389,11 +377,11 @@ class BookBinding(Augmentation):
 
             image_added_border_right = page_border(np.rot90(image,3))
             image_added_border_right = np.rot90(image_added_border_right[added_border_height:,:])
-            
+
             # flipud to create a better curvy shape
             image_shadow_right = self.add_book_shadow(np.flipud(image_added_border_right), radius, angle)
             image_right = np.flipud(self.curve_page(image_shadow_right, curve_value))
-            
+
         else:
             page_border = PageBorder(
                 page_border_width_height=(int(added_border_height / 2), added_border_height),
@@ -412,8 +400,8 @@ class BookBinding(Augmentation):
             image_added_border_right = page_border(image)
             image_shadow_right = self.add_book_shadow(image_added_border_right, radius, angle)
             image_right = self.curve_page(image_shadow_right, curve_value)
-            
-            
+
+
         # left page - add page border, add shadow and then bend page
         if curve_down:
             page_border = PageBorder(
@@ -431,29 +419,29 @@ class BookBinding(Augmentation):
             )
 
             image_added_border_left = page_border(np.fliplr(image))
-            
+
             from matplotlib import pyplot as plt
             plt.figure()
             plt.imshow(image_added_border_left)
             plt.title("after page broder")
-            
+
             image_shadow_left = np.fliplr(self.add_book_shadow(image_added_border_left, radius, angle))
-            
+
             image_shadow_left = image_shadow_left[:,:-int(added_border_height / 2)]
-            
+
             plt.figure()
             plt.imshow(image_shadow_left)
             plt.title("after shadow")
-            
+
             image_left = self.curve_page(np.fliplr(np.flipud(image_shadow_left)), curve_value * 3)
-            
+
             from matplotlib import pyplot as plt
             plt.figure()
             plt.imshow(image_left)
             plt.title("after curve page")
-            
+
 #            raise ValueError('a')
-            
+
         else:
             page_border = PageBorder(
                 page_border_width_height=(int(-added_border_height / 2), -added_border_height),
@@ -470,9 +458,9 @@ class BookBinding(Augmentation):
             )
 
             image_added_border_left = page_border(np.fliplr(np.flipud(image)))
-            
-            
-            
+
+
+
             image_shadow_left = np.fliplr(self.add_book_shadow(image_added_border_left, radius, angle))
             if image.shape[1] > image.shape[0]:
                 left_curve_value = curve_value
@@ -486,7 +474,7 @@ class BookBinding(Augmentation):
         # further bend left image by using perspective transform
         ysize, xsize = image_left.shape[:2]
 #        curve_xsize = curve_value*2
-        
+
 #        random.randint(int(xsize / 10), int(xsize / 8))
 
         # bending size
@@ -509,13 +497,13 @@ class BookBinding(Augmentation):
         image_left = (four_point_transform(img_left, source_points, target_points, cxsize, cysize) * 255).astype(
             "uint8",
         )
-        
+
         plt.figure()
         plt.imshow(image_left)
         plt.title("left")
-        
-        
-        
+
+
+
         # remove the empty section after the transform
         image_left = image_left[:, curve_xsize:]
         # generate range of mirror and crop image based on mirror size
@@ -558,4 +546,4 @@ class BookBinding(Augmentation):
         image_out = new_image
 
         return image_out
-        '''
+        """
