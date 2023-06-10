@@ -11,7 +11,7 @@ class InkColorSwap(Augmentation):
 
     :param ink_swap_color: The swapping color (in BGR) of the effect.
     :type ink_swap_color: tuple, optional
-    :param ink_swap_sequence_number_range :Pair of ints determing the consecutive swapping number in the detected contours.
+    :param ink_swap_sequence_number_range: Pair of ints determing the consecutive swapping number in the detected contours.
     :type ink_swap_sequence_number_range: tuple, optional
     :param ink_swap_min_width_range: Pair of ints/floats determining the minimum width of the contour.
             If the value is within the range of 0.0 to 1.0 and the value is float,
