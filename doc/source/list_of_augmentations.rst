@@ -17,11 +17,13 @@ List of Augmentations
    augmentations/dirtydrum.rst
    augmentations/dirtyrollers.rst
    augmentations/dithering.rst
+   augmentations/dotmatrix.rst
    augmentations/faxify.rst
    augmentations/folding.rst
    augmentations/gamma.rst
    augmentations/geometric.rst
    augmentations/glitcheffect.rst
+   augmentations/hollow.rst
    augmentations/inkbleed.rst
    augmentations/inkcolorswap.rst
    augmentations/inkmottling.rst
@@ -35,11 +37,14 @@ List of Augmentations
    augmentations/lowlightnoise
    augmentations/markup.rst
    augmentations/noisetexturize.rst
+   augmentations/noisylines.rst
    augmentations/pageborder.rst
    augmentations/quasi_crystal.rst
    augmentations/reflectedlight.rst
    augmentations/scribbles.rst
+   augmentations/sectionshift.rst
    augmentations/shadowcast.rst
+   augmentations/squish.rst
    augmentations/subtlenoise.rst
    augmentations/voronoi.rst
    augmentations/watermark.rst

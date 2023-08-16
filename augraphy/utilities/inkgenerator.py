@@ -657,6 +657,9 @@ class InkGenerator:
 
             coordinates = cv2.findNonZero(255 - binary_image)
             x, y, xsize, ysize = cv2.boundingRect(coordinates)
+            # minimum size
+            xsize = max(5, xsize)
+            ysize = max(5, ysize)
             texts_image = texts_image[y : y + ysize, x : x + xsize]
 
             if self.ink_location == "random":
