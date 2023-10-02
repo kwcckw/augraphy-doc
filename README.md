@@ -54,7 +54,7 @@ Some augmentations support additional inputs such as mask, keypoints and boundin
 |VoronoiTessellation |        ✓        |        -        |        -        |        -        |
 |WaterMark           |        ✓        |        ✕        |        ✕        |        -        |
 
-Remarks:
-(-) augmentation doesn't affect this input. 
-(✓) augmentation is supported on this input. 
-(✕) augmentation is not supported on this input. 
+Remarks: <br />
+(-) augmentation doesn't affect this input. <br />
+(✓) augmentation is supported on this input. <br />
+(✕) augmentation is not supported on this input. <br />
