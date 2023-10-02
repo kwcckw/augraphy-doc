@@ -8,12 +8,13 @@
 # Additional Target Support
 Some augmentations support additional inputs such as mask, keypoints and bounding boxes. 
 
+
 |    Augmentation    |      Image      |       Mask      |    Keypoints    | Bounding Boxes  |
 |--------------------|----------------:|----------------:|----------------:|----------------:|
 |BadPhotoCopy        |        ✓        |        -        |        -        |        -        |
 |BindingsAndFasteners|        ✓        |        -        |        -        |        -        |
 |BleedThrough        |        ✓        |        -        |        -        |        -        |
-|BookBinding         |        ✓        |        -        |        -        |        -        |
+|BookBinding         |        ✓        |        ✓        |        ✓        |        ✓*       |
 |Brightness          |        ✓        |        -        |        -        |        -        |
 |BrightnessTexturize |        ✓        |        -        |        -        |        -        |
 |ColorPaper          |        ✓        |        -        |        -        |        -        |
@@ -24,15 +25,15 @@ Some augmentations support additional inputs such as mask, keypoints and boundin
 |Dithering           |        ✓        |        -        |        -        |        -        |
 |DotMatrix           |        ✓        |        -        |        -        |        -        |
 |Faxify              |        ✓        |        -        |        -        |        -        |
-|Folding             |        ✓        |        -        |        -        |        -        |
+|Folding             |        ✓        |        ✓        |        ✓        |        ✓*       |
 |Gamma               |        ✓        |        -        |        -        |        -        |
-|Geometric           |        ✓        |        -        |        -        |        -        |
-|GlitchEffect        |        ✓        |        -        |        -        |        -        |
+|Geometric           |        ✓        |        ✓        |        ✓        |        ✓*       |
+|GlitchEffect        |        ✓        |        ✓        |        ✓        |        ✓*       |
 |Hollow              |        ✓        |        -        |        -        |        -        |
 |InkBleed            |        ✓        |        -        |        -        |        -        |
 |InkColorSwap        |        ✓        |        -        |        -        |        -        |
 |InkMottling         |        ✓        |        -        |        -        |        -        |
-|InkShifter          |        ✓        |        -        |        -        |        -        |
+|InkShifter          |        ✓        |        ✓        |        ✕        |        ✕        |
 |Jpeg                |        ✓        |        -        |        -        |        -        |
 |Letterpress         |        ✓        |        -        |        -        |        -        |
 |LightingGradient    |        ✓        |        -        |        -        |        -        |
@@ -43,18 +44,19 @@ Some augmentations support additional inputs such as mask, keypoints and boundin
 |Markup              |        ✓        |        -        |        -        |        -        |
 |NoiseTexturize      |        ✓        |        -        |        -        |        -        |
 |NoisyLines          |        ✓        |        -        |        -        |        -        |
-|PageBorder          |        ✓        |        -        |        -        |        -        |
+|PageBorder          |        ✓        |        ✓        |        ✓        |        ✓*       |
 |PatternGenerator    |        ✓        |        -        |        -        |        -        |
 |ReflectedLight      |        ✓        |        -        |        -        |        -        |
 |Scribbles           |        ✓        |        -        |        -        |        -        |
-|SectionShift        |        ✓        |        -        |        -        |        -        |
+|SectionShift        |        ✓        |        ✓        |        ✓        |        ✓*       |
 |ShadowCast          |        ✓        |        -        |        -        |        -        |
-|Squish              |        ✓        |        -        |        -        |        -        |
+|Squish              |        ✓        |        ✓        |        ✓        |        ✓*       |
 |SubtleNoise         |        ✓        |        -        |        -        |        -        |
 |VoronoiTessellation |        ✓        |        -        |        -        |        -        |
-|WaterMark           |        ✓        |        ✕        |        ✕        |        -        |
+|WaterMark           |        ✓        |        -        |        -        |        -        |
 
 Remarks: <br />
 [-] : augmentation doesn't affect this input. <br />
 [✓] : augmentation is supported on this input. <br />
 [✕] : augmentation is not supported on this input. <br />
+[✓*] : augmentation is supported on this input under certain criteria. <br />
