@@ -53,6 +53,7 @@ Some augmentations support additional inputs such as mask, keypoints and boundin
 |SubtleNoise         |        ✓        |        -        |        -        |        -        |
 |VoronoiTessellation |        ✓        |        -        |        -        |        -        |
 |WaterMark           |        ✓        |        -        |        -        |        -        |
+
 Remarks:
 - : augmentation doesn't affect this input.
 ✓ : augmentation is supported on this input.
