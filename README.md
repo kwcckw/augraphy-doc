@@ -55,6 +55,6 @@ Some augmentations support additional inputs such as mask, keypoints and boundin
 |WaterMark           |        ✓        |        ✕        |        ✕        |        -        |
 
 Remarks: <br />
-(-) augmentation doesn't affect this input. <br />
-(✓) augmentation is supported on this input. <br />
-(✕) augmentation is not supported on this input. <br />
+- : augmentation doesn't affect this input. <br />
+✓ : augmentation is supported on this input. <br />
+✕ : augmentation is not supported on this input. <br />
